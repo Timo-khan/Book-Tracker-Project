@@ -12,6 +12,7 @@ export const Footer = () => {
 					<Link href="/">#</Link>
                     <Link href="">#</Link>
 				</div>
+				
 			</div>
 		</footer>
 	);
