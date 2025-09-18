@@ -1,0 +1,102 @@
+.header {
+	width: 100%;
+}
+
+.headerBar {
+	background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9);
+	color: white;
+	border-radius: 1rem;
+}
+
+.headerContainer {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 1.25rem 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.brandSection {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-left: -25px;
+}
+
+.brand {
+	font-size: 1.5rem;
+	font-weight: 600;
+	text-decoration: none;
+	color: white;
+}
+
+.signupCta {
+	margin-top: 0.25rem;
+	font-size: 0.75rem;
+	border: 1px solid rgba(255, 255, 255, 0.4);
+	background: rgba(255, 255, 255, 0.1);
+	padding: 0.25rem 0.75rem;
+	border-radius: 0.5rem;
+	cursor: pointer;
+	transition: background 0.2s;
+}
+
+.signupCta:hover {
+	background: rgba(255, 255, 255, 0.2);
+}
+
+
+/* Auth */
+.authLinks {
+	display: flex;
+	gap: 1.5rem;
+}
+
+.authLinks button {
+	background: none;
+	border: none;
+	color: white;
+	font-size: 0.875rem;
+	cursor: pointer;
+}
+
+.authLinks button:hover {
+	text-decoration: underline;
+}
+
+/* Misc */
+.menuBtn {
+	display: none;
+	background: transparent;
+	border: none;
+	cursor: pointer;
+	color: white;
+}
+
+.icon {
+	width: 20px;
+	height: 20px;
+}
+
+.headerSpacer {
+	height: 1.5rem;
+}
+
+/* Container that keeps the video tidy & circular */
+.navVideoWrap {
+	width: 70px;
+	height: 70px;
+	border-radius: 9999px; /* circle */
+	overflow: hidden; /* crop to circle */
+	border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Make the video fill the circle without distortion */
+.navVideo {
+	width: 100%;
+	height: 100%;
+	object-fit: cover; /* center-crop */
+	display: block; /* remove inline gaps */
+	/* Tip: keep it muted to allow autoplay across browsers */
+}
