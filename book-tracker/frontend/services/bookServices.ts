@@ -2,12 +2,16 @@ export interface Book {
 	id: string;
 	title: string;
 	authors?: string[];
+	publisher?: string;
+	publishedDate?: string;
+	description?: string;
+	category?: string;
 	thumbnail?: string;
 	webReaderLink?: string;
 	pdfLink?: string;
 	epubLink?: string;
-	previewLink?: string; 
-	infoLink?: string; 
+	previewLink?: string;
+	infoLink?: string;
 }
 
 export interface GoogleBookItem {
@@ -20,7 +24,7 @@ export interface GoogleBookItem {
 			smallThumbnail?: string;
 		};
 		previewLink?: string;
-		infoLink?: string; 
+		infoLink?: string;
 	};
 	accessInfo?: {
 		webReaderLink?: string;
@@ -38,7 +42,8 @@ export interface GoogleBooksResponse {
 }
 
 // Force http -> https (keeps undefined as undefined)
-const https = (u?: string) => (u ? u.replace(/^http:\/\//, "https://") : undefined);
+const https = (u?: string) =>
+	u ? u.replace(/^http:\/\//, "https://") : undefined;
 
 export async function searchBooks(
 	query: string,
@@ -65,11 +70,11 @@ export async function searchBooks(
 		pdfLink: item.accessInfo?.pdf?.acsTokenLink,
 		epubLink: item.accessInfo?.epub?.acsTokenLink,
 		previewLink: https(item.volumeInfo.previewLink),
-    infoLink: https(item.volumeInfo.infoLink), 
+		infoLink: https(item.volumeInfo.infoLink),
 	}));
 }
 
-// Save book to a collection (favorites, to-read, have-read)
+// Save book to collection (favorites, to-read, have-read)
 const API_BASE = "http://localhost:5002/api/collections";
 
 export async function saveBookToCollection(
@@ -79,10 +84,15 @@ export async function saveBookToCollection(
 	const res = await fetch(`${API_BASE}/${collection}`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
+		credentials: "include", //send JWT cookie
 		body: JSON.stringify({
 			google_id: book.id,
 			title: book.title,
 			author: book.authors?.join(", ") ?? null,
+			publisher: book.publisher ?? null,
+			published_date: book.publishedDate ?? null,
+			description: book.description ?? null,
+			category: book.category ?? null,
 			thumbnail_url: book.thumbnail ?? null,
 			webReaderLink: book.webReaderLink ?? null,
 			pdfLink: book.pdfLink ?? null,
