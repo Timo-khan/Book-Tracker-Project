@@ -4,8 +4,8 @@ body {
 		sans-serif;
 	background-color: #f9fafb;
 	color: #111827;
-	margin: 0;
-	padding: 0;
+	/* margin: 0;
+	padding: 0; */
 	line-height: 1.5;
 }
 
@@ -15,7 +15,7 @@ body {
 	margin: 0 auto;
 	padding: 2rem;
 
-	background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9)
+	/* background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9) */
 }
 
 /* Title */
