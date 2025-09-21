@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, FormEvent } from "react";
-import Image from "next/image"; 
+import Image from "next/image";
 import "./loginSignup.css";
 
 export type AuthMode = "signup" | "login";
@@ -27,7 +27,7 @@ const LoginSignup: React.FC = () => {
 		setLoading(true);
 		try {
 			if (mode === "signup") {
-				// Simple password confirmation check
+				// password confirmation check
 				if (form.password !== form.confirmPassword) {
 					alert("Passwords do not match!");
 					setLoading(false);
@@ -51,7 +51,7 @@ const LoginSignup: React.FC = () => {
 				const data = await res.json();
 				if (!res.ok) throw new Error(data.message);
 
-				alert("✅ You have successfully created your account!");
+				alert("You have successfully created your account!");
 				window.location.href = "/dashboard";
 			} else {
 				const res = await fetch(`${apiUrl}/login`, {
@@ -67,7 +67,7 @@ const LoginSignup: React.FC = () => {
 				const data = await res.json();
 				if (!res.ok) throw new Error(data.message);
 
-				alert("✅ Logged in successfully!");
+				alert("Logged in successfully!");
 				window.location.href = "/dashboard";
 			}
 		} catch (err: unknown) {
@@ -95,7 +95,12 @@ const LoginSignup: React.FC = () => {
 							<>
 								<div className="input-wrapper">
 									<span className="input-icon">
-										<Image src="/icons/person.png" alt="" className="icon-img" />
+										<Image
+											src="/icons/person.png"
+											alt=""
+											className="icon-img" width={32} 
+  height={32} 
+										/>
 									</span>
 									<input
 										id="firstname"
@@ -112,7 +117,12 @@ const LoginSignup: React.FC = () => {
 
 								<div className="input-wrapper">
 									<span className="input-icon">
-										<Image src="/icons/person.png" alt="" className="icon-img" />
+										<Image
+											src="/icons/person.png"
+											alt=""
+											className="icon-img" width={32} 
+  height={32} 
+										/>
 									</span>
 									<input
 										id="lastname"
@@ -129,7 +139,12 @@ const LoginSignup: React.FC = () => {
 
 								<div className="input-wrapper">
 									<span className="input-icon">
-										<Image src="/icons/person.png" alt="" className="icon-img" />
+										<Image
+											src="/icons/person.png"
+											alt=""
+											className="icon-img" width={32} 
+  height={32} 
+										/>
 									</span>
 									<input
 										id="username"
@@ -148,7 +163,8 @@ const LoginSignup: React.FC = () => {
 
 						<div className="input-wrapper">
 							<span className="input-icon">
-								<Image src="/icons/mail.png" alt="" className="icon-img" />
+								<Image src="/icons/mail.png" alt="" className="icon-img" width={32} 
+  height={32}  />
 							</span>
 							<input
 								id="email"
@@ -163,7 +179,8 @@ const LoginSignup: React.FC = () => {
 
 						<div className="input-wrapper">
 							<span className="input-icon">
-								<Image src="/icons/lock.png" alt="" className="icon-img" />
+								<Image src="/icons/lock.png" alt="" className="icon-img" width={32} 
+  height={32} />
 							</span>
 							<input
 								id="password"
@@ -180,7 +197,8 @@ const LoginSignup: React.FC = () => {
 
 						<div className="input-wrapper">
 							<span className="input-icon">
-								<Image src="/icons/lock.png" alt="" className="icon-img" />
+								<Image src="/icons/lock.png" alt="" className="icon-img" width={32} 
+  height={32} />
 							</span>
 							<input
 								id="confirmPassword"
