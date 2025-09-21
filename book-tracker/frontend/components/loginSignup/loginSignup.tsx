@@ -98,8 +98,9 @@ const LoginSignup: React.FC = () => {
 										<Image
 											src="/icons/person.png"
 											alt=""
-											className="icon-img" width={32} 
-  height={32} 
+											className="icon-img"
+											width={32}
+											height={32}
 										/>
 									</span>
 									<input
@@ -120,8 +121,9 @@ const LoginSignup: React.FC = () => {
 										<Image
 											src="/icons/person.png"
 											alt=""
-											className="icon-img" width={32} 
-  height={32} 
+											className="icon-img"
+											width={32}
+											height={32}
 										/>
 									</span>
 									<input
@@ -142,8 +144,9 @@ const LoginSignup: React.FC = () => {
 										<Image
 											src="/icons/person.png"
 											alt=""
-											className="icon-img" width={32} 
-  height={32} 
+											className="icon-img"
+											width={32}
+											height={32}
 										/>
 									</span>
 									<input
@@ -163,8 +166,13 @@ const LoginSignup: React.FC = () => {
 
 						<div className="input-wrapper">
 							<span className="input-icon">
-								<Image src="/icons/mail.png" alt="" className="icon-img" width={32} 
-  height={32}  />
+								<Image
+									src="/icons/mail.png"
+									alt=""
+									className="icon-img"
+									width={32}
+									height={32}
+								/>
 							</span>
 							<input
 								id="email"
@@ -179,8 +187,13 @@ const LoginSignup: React.FC = () => {
 
 						<div className="input-wrapper">
 							<span className="input-icon">
-								<Image src="/icons/lock.png" alt="" className="icon-img" width={32} 
-  height={32} />
+								<Image
+									src="/icons/lock.png"
+									alt=""
+									className="icon-img"
+									width={32}
+									height={32}
+								/>
 							</span>
 							<input
 								id="password"
@@ -197,8 +210,13 @@ const LoginSignup: React.FC = () => {
 
 						<div className="input-wrapper">
 							<span className="input-icon">
-								<Image src="/icons/lock.png" alt="" className="icon-img" width={32} 
-  height={32} />
+								<Image
+									src="/icons/lock.png"
+									alt=""
+									className="icon-img"
+									width={32}
+									height={32}
+								/>
 							</span>
 							<input
 								id="confirmPassword"
