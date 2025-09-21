@@ -1,95 +1,102 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+/*fixed header header overlap*/
+/* .home {
+	padding-top: 75px; 
+} */
+
 .header {
 	width: 100%;
 }
 
-.headerBar {
-	background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9);
-	color: white;
-	border-radius: 1rem;
-}
 
 .headerContainer {
-	max-width: 1200px;
-	margin: 0 auto;
-	padding: 1.25rem 1rem;
+	max-width: 100%;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
 }
 
-.brandSection {
+.logo {
+	margin-top: 13px;
+	background-color: #e0f7fa;
+	box-shadow: 5px 2px 9px black;
+	width: 50px;
+	height: 50px;
+	border-radius: 9999px;
+	overflow: hidden; /* crop to circle */
+	border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.Brand-container {
 	display: flex;
-	align-items: center;
-	gap: 1rem;
-	margin-left: -25px;
+	flex-direction: row;
+	justify-content: flex-start;
+	/* background-color: bisque; */
+	gap: 25px;
+	width: 250px;
+	height: 75px;
+	margin-left: 25px;
+}
+
+.brand-name {
+	margin-top: 20px;
 }
 
 .brand {
 	font-size: 1.5rem;
 	font-weight: 600;
 	text-decoration: none;
-	color: white;
+	color: #e0f7fa;
+	text-shadow: 5px 2px 4px black;
 }
 
-.signupCta {
-	margin-top: 0.25rem;
-	font-size: 0.75rem;
-	border: 1px solid rgba(255, 255, 255, 0.4);
-	background: rgba(255, 255, 255, 0.1);
-	padding: 0.25rem 0.75rem;
-	border-radius: 0.5rem;
-	cursor: pointer;
-	transition: background 0.2s;
-}
-
-.signupCta:hover {
-	background: rgba(255, 255, 255, 0.2);
-}
-
-
-/* Auth */
-.authLinks {
+.curious {
 	display: flex;
-	gap: 1.5rem;
+	flex-direction: column;
+	justify-content: center;
 }
 
-.authLinks button {
+.loginCta {
+	height: auto;
+	text-shadow: 5px 2px 4px black;
+	/* background: #e0f7fa; */
 	background: none;
 	border: none;
-	color: white;
-	font-size: 0.875rem;
+	padding: 0.4rem 0.75rem; /* balanced padding */
+	border-radius: 10px;
+	font-size: 0.80rem;
+	font-weight: bold;
+	color: #e0f7fa;
 	cursor: pointer;
+	line-height: 1.2; /* ensures text is vertically centered */
+	transition: background 0.2s ease;
 }
 
-.authLinks button:hover {
-	text-decoration: underline;
+.loginCta:hover {
+	background: linear-gradient(to right, #6c28d964, #a31caf55, #f43f5dbb);
 }
 
-/* Misc */
-.menuBtn {
-	display: none;
-	background: transparent;
-	border: none;
-	cursor: pointer;
-	color: white;
+.loginSection {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 1rem;
+	margin-right: 25px;
+	/* background-color: #e0f7fa; */
 }
 
-.icon {
-	width: 20px;
-	height: 20px;
-}
-
-.headerSpacer {
-	height: 1.5rem;
-}
-
-/* Container that keeps the video tidy & circular */
 .navVideoWrap {
-	width: 70px;
-	height: 70px;
+	width: 50px;
+	height: 50px;
 	border-radius: 9999px; /* circle */
 	overflow: hidden; /* crop to circle */
-	border: 1px solid rgba(255, 255, 255, 0.3);
+	border: 1px solid #e0f7fa;
+	box-shadow: 5px 2px 9px black;
 }
 
 /* Make the video fill the circle without distortion */
@@ -99,4 +106,26 @@
 	object-fit: cover; /* center-crop */
 	display: block; /* remove inline gaps */
 	/* Tip: keep it muted to allow autoplay across browsers */
+}
+
+.headerBar {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	/* background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9); */
+	color: #e0f7fa;
+	background-color: rgba(0, 0, 0, 0.247);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.492);
+	transition: transform 0.3s ease-in-out;
+	z-index: 1000;
+}
+
+.headerBar.hidden {
+	transform: translateY(-100%);
+}
+
+/* Prevent content from hiding under header */
+body {
+	padding-top: 75px; /* adjust to your header height */
 }
