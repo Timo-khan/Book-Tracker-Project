@@ -129,3 +129,60 @@ body {
 body {
 	padding-top: 75px; /* adjust to your header height */
 }
+
+
+.search-container {
+  position: relative;
+  margin: 0 20px;
+}
+
+.search-container input {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  outline: none;
+  width: 220px;
+}
+
+.search-dropdown {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background: #2a2a2a;
+  border: 1px solid #444;
+  border-radius: 6px;
+  width: 300px;
+  z-index: 20;
+}
+
+.search-suggestion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px;
+  color: #fff;
+  text-decoration: none;
+}
+
+.search-suggestion:hover {
+  background: #3a3a3a;
+}
+
+.see-more {
+  display: block;
+  padding: 10px;
+  text-align: center;
+  color: #00d0ff;
+  font-weight: bold;
+  text-decoration: none;
+}
+
+.see-more:hover {
+  background: #333;
+}
+
+.loading {
+  padding: 10px;
+  font-size: 0.9rem;
+  color: #aaa;
+}
