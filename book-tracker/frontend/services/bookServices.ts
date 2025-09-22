@@ -74,6 +74,37 @@ export async function searchBooks(
 	}));
 }
 
+
+/**
+ * 📘 Fetch single book by ID
+ */
+export async function getBookById(id: string): Promise<Book> {
+  const res = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`);
+
+  if (!res.ok) {
+    throw new Error(`Failed to fetch book with id ${id}`);
+  }
+
+  const data = await res.json();
+  const b = data.volumeInfo;
+
+  return {
+    id: data.id,
+    title: b.title,
+    authors: b.authors,
+    publisher: b.publisher,
+    publishedDate: b.publishedDate,
+    description: b.description,
+    category: b.categories?.[0],
+    thumbnail: b.imageLinks?.thumbnail,
+    webReaderLink: data.accessInfo?.webReaderLink,
+    pdfLink: data.accessInfo?.pdf?.acsTokenLink,
+    epubLink: data.accessInfo?.epub?.acsTokenLink,
+    previewLink: https(b.previewLink),
+    infoLink: https(b.infoLink),
+  };
+}
+
 // Save book to collection (favorites, to-read, have-read)
 const API_BASE = "http://localhost:5002/api/collections";
 
