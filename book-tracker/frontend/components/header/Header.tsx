@@ -2,8 +2,9 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
+import { searchBooks, Book } from "@/frontend/services/bookServices";
 import "./Header.css";
 
 interface HeaderProps {
@@ -14,6 +15,10 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 	const [isHidden, setIsHidden] = useState(false);
 	const [lastScrollY, setLastScrollY] = useState(0);
+	const [query, setQuery] = useState("");
+  const [suggestions, setSuggestions] = useState<Book[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
 	const router = useRouter();
 
 	// ✅ Hide header on scroll down, show on scroll up
@@ -33,6 +38,43 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 		window.addEventListener("scroll", handleScroll);
 		return () => window.removeEventListener("scroll", handleScroll);
 	}, [lastScrollY]);
+
+		// Live search suggestions
+  useEffect(() => {
+    if (!query) {
+      setSuggestions([]);
+      setShowDropdown(false);
+      return;
+    }
+
+    setLoading(true);
+    searchBooks(query, 0)
+      .then((results) => {
+        setSuggestions(results.slice(0, 5));
+        setShowDropdown(true);
+      })
+      .finally(() => setLoading(false));
+  }, [query]);
+
+
+
+  // ... inside Header component
+const searchRef = useRef<HTMLDivElement | null>(null);
+
+// Close dropdown on outside click
+useEffect(() => {
+  function handleClickOutside(event: MouseEvent) {
+    if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+      setShowDropdown(false);
+    }
+  }
+
+  document.addEventListener("mousedown", handleClickOutside);
+  return () => document.removeEventListener("mousedown", handleClickOutside);
+}, []);
+
+
+
 
 	// ✅ Navigate to /login when button clicked
 	const handleLogin = () => {
@@ -60,6 +102,53 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 						/>
 					</div>
 				</div>
+
+
+				{/* 🔍 Search */}
+        <div className="search-container" ref={searchRef}>
+          <input
+            type="search"
+            placeholder="Search all books..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => query && setShowDropdown(true)}
+          />
+          {showDropdown && (
+            <div className="search-dropdown">
+              {loading && <p className="loading">Searching…</p>}
+
+              {suggestions.map((book) => (
+                <Link
+                  key={book.id}
+                  href={`/books/${book.id}`}
+                  className="search-suggestion"
+                  onClick={() => setShowDropdown(false)}
+                >
+                  {book.thumbnail && (
+                    <Image
+                      src={book.thumbnail}
+                      alt={book.title}
+                      width={30}
+                      height={45}
+                    />
+                  )}
+                  <span>{book.title}</span>
+                </Link>
+              ))}
+
+              {suggestions.length > 0 && (
+                <Link
+                  href={`/search?q=${encodeURIComponent(query)}`}
+                  className="see-more"
+                  onClick={() => setShowDropdown(false)}
+                >
+                  See more results →
+                </Link>
+              )}
+            </div>
+          )}
+        </div>
+
 
 				<div className="loginSection" aria-label="User">
 					<button onClick={handleLogin} className="loginCta">
