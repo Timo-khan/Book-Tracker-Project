@@ -1,0 +1,50 @@
+.book-detail {
+  display: grid;
+  grid-template-columns: 250px 1fr 200px;
+  gap: 20px;
+  padding: 20px;
+  color: #fff;
+  background: #1c1c1c;
+}
+
+.book-cover img {
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.book-info h1 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.book-info h3 {
+  font-size: 1.2rem;
+  color: #bbb;
+  margin-bottom: 10px;
+}
+
+.book-info p {
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.book-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.book-actions select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #2a2a2a;
+  color: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.success-msg {
+  color: #27ae60;
+  margin-top: 10px;
+}
