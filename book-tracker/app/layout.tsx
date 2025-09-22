@@ -1,3 +1,5 @@
+import { Footer } from "@/frontend/components/footer/Footer";
+import Header from "@/frontend/components/header/Header";
 import type { Metadata } from "next";
 
 
@@ -14,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );
