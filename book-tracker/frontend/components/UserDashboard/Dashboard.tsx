@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import BookList from "../bookList/bookList";
 
 type User = {
 	firstName: string;
@@ -76,7 +75,7 @@ const Dashboard = () => {
 		}
 	}
 
-	// ✅ FIXED remove book handler to use plural + hyphenated
+
 	async function handleRemove(
 		type: "favorites" | "to-read" | "have-read",
 		id: string
@@ -202,8 +201,6 @@ const Dashboard = () => {
 					<p>You haven’t marked any books as read yet.</p>
 				)}
 			</section>
-
-			<BookList />
 		</div>
 	);
 };
