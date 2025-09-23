@@ -44,7 +44,14 @@ export default function SearchPage() {
 	}
 
 	if (!query) return <p>Please enter a search query.</p>;
-	if (loading) return <p>Loading search results...</p>;
+	if (loading) {
+	return (
+		<div className="search-page">
+			<h1>Search results for “{query}”</h1>
+			<div className="loading-bar" />
+		</div>
+	);
+}
 	if (error) return <p>Error: {error}</p>;
 
 	return (
