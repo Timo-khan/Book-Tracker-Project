@@ -28,6 +28,12 @@
 	}
 }
 
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
 /* Page */
 .auth-page {
 	min-height: 100vh;
