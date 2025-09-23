@@ -52,7 +52,7 @@ body {
 	font-weight: 600;
 	text-decoration: none;
 	/* color: #e0f7fa; */
-	/* text-shadow: 0px 1px 20px black; */
+	/* text-shadow: 3px 1px 1px white; */
 	transition: background 0.2s ease;
 	display: inline-block; /* allows transform */
 	background: linear-gradient(to right, #6d28d9, #a21caf, #f43f5e);
@@ -85,11 +85,22 @@ body {
 }
 
 .rdr-links {
+	/* text-shadow: 3px 1px 1px white; */
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	gap: 200px;
+	gap: 100px;
 	right: 10;
+	font-weight: 600;
+	text-decoration: none;
+	/* color: #e0f7fa; */
+	/* text-shadow: 0px 1px 20px black; */
+
+	background: linear-gradient(to right, #6d28d9, #a21caf, #f43f5e);
+	-webkit-background-clip: text; /* for Chrome, Safari */
+	-webkit-text-fill-color: transparent;
+	background-clip: text; /* standard property */
+	color: transparent;
 }
 
 .curious {
@@ -99,6 +110,7 @@ body {
 }
 
 .loginCta {
+	/* text-shadow: 3px 1px 0.1px white; */
 	height: auto;
 	/* text-shadow: 5px 2px 4px black; */
 	/* background: #e0f7fa; */
@@ -167,8 +179,9 @@ body {
 	width: 100%;
 	/* background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9); */
 	color: #e0f7fa;
-	background-color: rgba(0, 0, 0, 0.247);
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.492);
+	/* background-color: rgba(0, 0, 0, 0.778); */
+	background-color: rgb(228, 224, 228);
+	box-shadow: 0 2px 8px rgb(0, 0, 0);
 	transition: transform 0.3s ease-in-out;
 	z-index: 1000;
 }
@@ -254,4 +267,40 @@ body {
 	padding: 10px;
 	font-size: 0.9rem;
 	color: #aaa;
+}
+
+.search-box {
+	position: relative;
+	width: 100%;
+}
+
+.search-box input {
+	width: 100%;
+	height: 36px;
+	padding: 0 35px 0 10px; /* extra right padding for spinner */
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	font-size: 14px;
+	box-sizing: border-box;
+}
+
+/* Spinner inside the input */
+.spinner {
+	position: absolute;
+	right: 10px; /* inside input, aligned right */
+	top: 50%;
+	transform: translateY(-50%);
+	width: 16px;
+	height: 16px;
+	border: 2px solid rgba(0, 0, 0, 0.2);
+	border-top: 2px solid #6d28d9; /* gradient color if you want */
+	border-radius: 50%;
+	animation: spin 0.6s linear infinite;
+	pointer-events: none; /* so it won’t block typing */
+}
+
+@keyframes spin {
+	to {
+		transform: translateY(-50%) rotate(360deg);
+	}
 }
