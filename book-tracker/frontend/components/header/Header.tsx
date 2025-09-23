@@ -3,7 +3,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { searchBooks, Book } from "@/frontend/services/bookServices";
 import "./Header.css";
 
@@ -20,6 +20,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 	const [loading, setLoading] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
 	const router = useRouter();
+	const pathname = usePathname();
 
 	// Hide header on scroll down, show on scroll up
 	useEffect(() => {
@@ -82,6 +83,12 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 			router.push("/login");
 		}
 	};
+
+	//Hide header on login page
+	if (pathname === "/login" || pathname === "/signup") {
+		return null;
+	}
+
 	return (
 		<header className={`headerBar ${isHidden ? "hidden" : ""}`}>
 			<div className="headerContainer">
@@ -92,63 +99,66 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 						</Link>
 					</div>
 					<div className="logo">
-						<Image
-							src="/images/book heaven.png"
-							alt="logo"
-							width={50}
-							height={50}
-						/>
+						<Image src="/images/logo1.png" alt="logo" width={50} height={50} />
 					</div>
 				</div>
 
-				{/* 🔍 Search */}
-				<div className="search-container" ref={searchRef}>
-					<input
-						type="search"
-						placeholder="Search all books..."
-						value={query}
-						onChange={(e) => setQuery(e.target.value)}
-						onFocus={() => query && setShowDropdown(true)}
-					/>
-					{showDropdown && suggestions.length > 0 && (
-						<div className="search-dropdown">
-							{suggestions.map((book) => (
-								<Link
-									key={book.id}
-									href={`/books/${book.id}`}
-									className="search-suggestion"
-									onClick={() => setShowDropdown(false)}
-								>
-									{book.thumbnail && (
-										<Image
-											src={book.thumbnail}
-											alt={book.title}
-											width={30}
-											height={45}
-										/>
-									)}
-									<div className="suggestion-info">
-										<span className="suggestion-title">{book.title}</span>
-										{book.authors && (
-											<span className="suggestion-author">
-												{book.authors.join(", ")}
-											</span>
-										)}
-									</div>
-								</Link>
-							))}
+				<div className="search-pageRdr">
+					<div className="rdr-links">
+						<Link href="/">#</Link>
+						<Link href="/">#</Link>
+						<Link href="">#</Link>
+					</div>
 
-							{suggestions.length > 0 && (
-								<Link
-									href={`/search?q=${encodeURIComponent(query)}`}
-									className="see-more"
-									onClick={() => setShowDropdown(false)}
-								>
-									See more results →
-								</Link>
-							)}
-						</div>
-					)}
+					{/* 🔍 Search */}
+					<div className="search-container" ref={searchRef}>
+						<input
+							type="search"
+							placeholder="Search books..."
+							value={query}
+							onChange={(e) => setQuery(e.target.value)}
+							onFocus={() => query && setShowDropdown(true)}
+						/>
+						{showDropdown && suggestions.length > 0 && (
+							<div className="search-dropdown">
+								{suggestions.map((book) => (
+									<Link
+										key={book.id}
+										href={`/books/${book.id}`}
+										className="search-suggestion"
+										onClick={() => setShowDropdown(false)}
+									>
+										{book.thumbnail && (
+											<Image
+												src={book.thumbnail}
+												alt={book.title}
+												width={75}
+												height={95}
+											/>
+										)}
+										<div className="suggestion-info">
+											<span className="suggestion-title">{book.title}</span>
+											{book.authors && (
+												<span className="suggestion-author">
+													{book.authors.join(", ")}
+												</span>
+											)}
+										</div>
+									</Link>
+								))}
+
+								{suggestions.length > 0 && (
+									<Link
+										href={`/search?q=${encodeURIComponent(query)}`}
+										className="see-more"
+										onClick={() => setShowDropdown(false)}
+									>
+										See more results →
+									</Link>
+								)}
+							</div>
+						)}
+					</div>
 				</div>
 
 				<div className="loginSection" aria-label="User">
