@@ -1,5 +1,6 @@
 "use client";
 import React from "react";
+import Link from "next/link"; 
 // import Image from "next/image";
 import "./homePage.css";
 
@@ -13,10 +14,15 @@ const Homepage = () => {
 					<h2>Hi there!</h2>
 					<p>Let&apos;s discover your next favorite book.</p>
 					<div className="hero-buttons">
-						<button className="primary-btn">Sign up</button>
-						<button className="secondary-btn">Log in</button>
-                        </div>
-					</div>
+              {/* ✅ Links to signup and login pages */}
+              <Link href="/signup" className="primary-b">
+                Sign up
+              </Link>
+              <Link href="/login" className="secondary-b">
+                Log in
+              </Link>
+            </div>
+				</div>
 				</div>
 			</section>
 
