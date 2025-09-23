@@ -13,14 +13,14 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
-	const [isHidden, setIsHidden] = useState(false);
-	const [lastScrollY, setLastScrollY] = useState(0);
-	const [query, setQuery] = useState("");
-	const [suggestions, setSuggestions] = useState<Book[]>([]);
+	const [isHidden, setIsHidden] = useState(false); // hide header on scroll down
+	const [lastScrollY, setLastScrollY] = useState(0); // track scroll position
+	const [query, setQuery] = useState(""); // search input text
+	const [suggestions, setSuggestions] = useState<Book[]>([]); // search suggestions
 	const [loading, setLoading] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
-	const router = useRouter();
-	const pathname = usePathname();
+	const router = useRouter(); // Next.js router instance to programmatically navigate, router.push("/login"))
+	const pathname = usePathname();// Gives you the current URL path (e.g., "/login", "/dashboard")
 
 	// Hide header on scroll down, show on scroll up
 	useEffect(() => {
@@ -57,8 +57,8 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 			.finally(() => setLoading(false));
 	}, [query]);
 
-	// ... inside Header component
-	const searchRef = useRef<HTMLDivElement | null>(null);
+	// Used to detect clicks outside and close the search suggestions dropdown
+	const searchRef = useRef<HTMLDivElement | null>(null); 
 
 	// Close dropdown on outside click
 	useEffect(() => {
@@ -106,12 +106,13 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 				<div className="search-pageRdr">
 					<div className="rdr-links">
 						<Link href="/">#</Link>
-						<Link href="/">#</Link>
-						<Link href="">#</Link>
+						<Link href="/">Contact</Link>
+						<Link href="">About Us</Link>
 					</div>
 
 					{/* 🔍 Search */}
 					<div className="search-container" ref={searchRef}>
+						<div className="search-box">
 						<input
 							type="search"
 							placeholder="Search books..."
@@ -119,6 +120,11 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 							onChange={(e) => setQuery(e.target.value)}
 							onFocus={() => query && setShowDropdown(true)}
 						/>
+
+						
+						{loading && <div className="spinner"></div>}
+						</div>
+
 						{showDropdown && suggestions.length > 0 && (
 							<div className="search-dropdown">
 								{suggestions.map((book) => (
@@ -162,9 +168,14 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 				</div>
 
 				<div className="loginSection" aria-label="User">
-					<button onClick={handleLogin} className="loginCta">
-						Let&apos;s log in
-					</button>
+					{/*Hide on login, signup, and dashboard */}
+					{pathname !== "/login" &&
+						pathname !== "/signup" &&
+						pathname !== "/dashboard" && (
+							<button onClick={handleLogin} className="loginCta">
+								Let&apos;s log in
+							</button>
+						)}
 
 					<div className="navVideoWrap" aria-hidden="true">
 						<video
