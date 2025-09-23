@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
+import "./Dashboard.css"
 
 type User = {
 	firstName: string;
@@ -75,7 +76,6 @@ const Dashboard = () => {
 		}
 	}
 
-
 	async function handleRemove(
 		type: "favorites" | "to-read" | "have-read",
 		id: string
@@ -106,7 +106,7 @@ const Dashboard = () => {
 	return (
 		<div className="dashboard">
 			<h1>
-				Welcome {user.firstName} {user.lastName} 👋
+				Welcome {user.firstName} {user.lastName}!
 			</h1>
 			<p>Username: {user.username}</p>
 			<p>Email: {user.email}</p>
