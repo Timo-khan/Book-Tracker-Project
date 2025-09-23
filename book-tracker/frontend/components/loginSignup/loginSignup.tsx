@@ -27,6 +27,13 @@ const LoginSignup: React.FC = () => {
 		setLoading(true);
 		try {
 			if (mode === "signup") {
+				// ✅ Added inline password length validation
+				if (form.password.length < 8) {
+					alert("Password must be at least 8 characters long.");
+					setLoading(false);
+					return;
+				}
+
 				// password confirmation check
 				if (form.password !== form.confirmPassword) {
 					alert("Passwords do not match!");
@@ -208,31 +215,33 @@ const LoginSignup: React.FC = () => {
 							/>
 						</div>
 
-						<div className="input-wrapper">
-							<span className="input-icon">
-								<Image
-									src="/icons/lock.png"
-									alt=""
-									className="icon-img"
-									width={32}
-									height={32}
+						{mode === "signup" && (
+							<div className="input-wrapper">
+								<span className="input-icon">
+									<Image
+										src="/icons/lock.png"
+										alt=""
+										className="icon-img"
+										width={32}
+										height={32}
+									/>
+								</span>
+								<input
+									id="confirmPassword"
+									type="password"
+									placeholder="Re-enter Password"
+									autoComplete="new-password"
+									value={form.confirmPassword}
+									onChange={(e) =>
+										setForm({ ...form, confirmPassword: e.target.value })
+									}
+									className="input-field"
 								/>
-							</span>
-							<input
-								id="confirmPassword"
-								type="password"
-								placeholder="Re-enter Password"
-								autoComplete="new-password"
-								value={form.confirmPassword}
-								onChange={(e) =>
-									setForm({ ...form, confirmPassword: e.target.value })
-								}
-								className="input-field"
-							/>
-						</div>
+							</div>
+						)}
 
 						<p className="auth-lost-password">
-							Lost Password? <a href="#">Click Here!</a>
+							Forgot Password? <a href="#">Click Here!</a>
 						</p>
 
 						<div className="auth-buttons">
@@ -244,6 +253,7 @@ const LoginSignup: React.FC = () => {
 								{loading ? "Working…" : title}
 							</button>
 
+							{/* Switch button toggles between signup and login */}
 							<button
 								type="button"
 								onClick={() => setMode(mode === "signup" ? "login" : "signup")}
