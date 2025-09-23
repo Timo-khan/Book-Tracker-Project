@@ -78,7 +78,7 @@ const LoginSignup: React.FC<LoginSignupProps> = ({ defaultMode = "signup" }) => 
 				const data = await res.json();
 				if (!res.ok) throw new Error(data.message);
 
-				alert("Logged in successfully!");
+				// alert("Logged in successfully!");
 				window.location.href = "/dashboard";
 			}
 		} catch (err: unknown) {
