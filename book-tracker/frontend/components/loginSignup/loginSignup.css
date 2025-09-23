@@ -1,4 +1,3 @@
-
 :root {
 	--bg: #0f172a; /* slate-900 */
 	--bg-soft: #111827; /* gray-900 */
@@ -12,7 +11,7 @@
 	--shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
 	--radius: 16px;
 	--radius-sm: 10px;
-    --secondary: #FFFFFF;
+	--secondary: #ffffff;
 }
 
 @media (prefers-color-scheme: light) {
@@ -209,8 +208,7 @@
 
 /* Primary == emphasis */
 .primary-btn {
-	background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9);
-	color: white;
+	color: black;
 	box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
 }
 .primary-btn:hover {
@@ -224,14 +222,36 @@
 .secondary-btn {
 	background: transparent;
 	color: var(--text);
-	border: 1.5px solid rgba(148, 163, 184, 0.35);
+	font-weight: bold;
+	color: black; /* text color */
+	background: linear-gradient(#fff, #fff) padding-box,
+		/* inside */ linear-gradient(to right, #6d28d9, #a21caf, #f43f5e) border-box; /* border */
+	border: 3px solid transparent;
+	cursor: pointer;
 }
-.secondary-btn:hover {
+/* .secondary-btn:hover {
 	border-color: var(--primary);
 	color: var(--primary);
-}
+} */
 .secondary-btn:active {
 	transform: translateY(1px);
+}
+
+.aut-buttons {
+	display: flex;
+	/* gap: 1rem;
+  margin-top: 1.5rem; */
+}
+/* When in signup mode → submit left, switch right */
+.signup-layout {
+	flex-direction: row;
+	justify-content: flex-end;
+}
+
+/* When in login mode → switch left, submit right */
+.login-layout {
+	flex-direction: row-reverse;
+	justify-content: flex-end;
 }
 
 /* Disabled */
