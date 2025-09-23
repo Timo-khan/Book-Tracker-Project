@@ -6,8 +6,12 @@ import "./loginSignup.css";
 
 export type AuthMode = "signup" | "login";
 
-const LoginSignup: React.FC = () => {
-	const [mode, setMode] = useState<AuthMode>("signup");
+interface LoginSignupProps {
+  defaultMode?: AuthMode; //prop to control initial mode
+}
+
+const LoginSignup: React.FC<LoginSignupProps> = ({ defaultMode = "signup" }) => {
+	const [mode, setMode] = useState<AuthMode>(defaultMode);
 	const [loading, setLoading] = useState(false);
 	const [form, setForm] = useState({
 		firstName: "",
