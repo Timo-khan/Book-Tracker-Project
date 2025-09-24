@@ -74,8 +74,7 @@ export async function searchBooks(
 	}));
 }
 
-
-	//Fetch single book by ID
+//Fetch single book by ID
 
 export async function getBookById(id: string): Promise<Book> {
 	const res = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`);
@@ -105,13 +104,13 @@ export async function getBookById(id: string): Promise<Book> {
 }
 
 // Save book to collection (favorites, to-read, have-read)
-const API_BASE = "http://localhost:5002/api/collections";
+const COLLECTIONS_API = "http://localhost:5002/api/collections";
 
 export async function saveBookToCollection(
 	book: Book,
 	collection: "favorites" | "to-read" | "have-read"
 ) {
-	const res = await fetch(`${API_BASE}/${collection}`, {
+	const res = await fetch(`${COLLECTIONS_API}/${collection}`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		credentials: "include", //send JWT cookie
@@ -132,8 +131,33 @@ export async function saveBookToCollection(
 
 	if (!res.ok) {
 		const err = await res.json();
-		throw new Error(err.error || "Failed to save book");
+		throw new Error(err.error || "You need to sign in to save books");
 	}
 
 	return res.json();
+}
+
+// Save a book to Recommended (community-wide)
+const RECOMMENDED_API = "http://localhost:5002/api/recommended";
+export async function recommendBook(book: Book) {
+	const res = await fetch(RECOMMENDED_API, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		credentials: "include",
+		body: JSON.stringify({
+			google_id: book.id,
+			title: book.title,
+			author: book.authors?.join(", "),
+			thumbnail_url: book.thumbnail,
+			publisher: book.publisher,
+			published_date: book.publishedDate,
+			description: book.description,
+		}),
+	});
+
+	const data = await res.json();
+	if (!res.ok) {
+		throw new Error(data.error || "Failed to recommend");
+	}
+	return data;
 }
