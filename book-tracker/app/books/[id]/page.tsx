@@ -6,7 +6,7 @@ import Image from "next/image";
 import {
 	getBookById,
 	saveBookToCollection,
-	Book,
+	Book, recommendBook, 
 } from "@/frontend/services/bookServices";
 import "./BookPage.css";
 
@@ -48,29 +48,13 @@ export default function BookPage() {
 
 	async function handleRecommend() {
 		if (!book) return;
-		try {
-			const res = await fetch("http://localhost:5002/api/recommended", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				credentials: "include",
-				body: JSON.stringify({
-					google_id: book.id,
-					title: book.title,
-					author: book.authors?.join(", "),
-					thumbnail_url: book.thumbnail,
-					publisher: book.publisher,
-					published_date: book.publishedDate,
-					description: book.description,
-				}),
-			});
-
-			const data = await res.json();
-			if (!res.ok) throw new Error(data.error || "Failed to recommend");
-			setMessage(`⭐ "${book.title}" has been recommended!`);
-		} catch (err: unknown) {
-			setError(err instanceof Error ? err.message : "Could not recommend.");
-		}
-	}
+  try {
+    await recommendBook(book); // call service
+    setMessage(`"${book.title}" has been recommended!`);
+  } catch (err: unknown) {
+    setError(err instanceof Error ? err.message : "Could not recommend.");
+  }
+}
 
 	if (loading) return <p>Loading book...</p>;
 	if (error) return <p>Error: {error}</p>;
@@ -113,11 +97,11 @@ export default function BookPage() {
 					<option value="" disabled>
 						Add to...
 					</option>
-					<option value="favorites">❤️ Favorites</option>
+					<option value="favorites">⭐ Favorites</option>
 					<option value="to-read">📖 To Read</option>
 					<option value="have-read">✅ Have Read</option>
 				</select>
-				<button onClick={handleRecommend}>⭐ Recommend</button>
+				<button onClick={handleRecommend}>Recommend</button>
 			</div>
 		</div>
 	);
