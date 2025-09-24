@@ -1,0 +1,120 @@
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+
+.dashboard {
+	padding-top: 90px;
+	min-height: 100vh;
+
+	position: relative;
+	overflow: hidden;
+	background: #ffffff; /* fallback */
+	z-index: 0; /* content container forms stacking context */
+}
+
+.dashboard::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 900px;
+
+	/* Apply your gradient */
+	background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9);
+
+	/* Wave mask */
+	-webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'><path d='M0,160 C120,220 280,80 480,160 C680,240 880,120 1440,200 L1440,0 L0,0 Z'/></svg>")
+		no-repeat top center / cover;
+	mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'><path d='M0,160 C120,220 280,80 480,160 C680,240 880,120 1440,200 L1440,0 L0,0 Z'/></svg>")
+		no-repeat top center / cover;
+
+	z-index: -1; /* push it BEHIND everything */
+}
+
+.dashboard > * {
+	position: relative;
+	z-index: 1; /* make sure all content is above the mask */
+}
+
+.dashboard-header {
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: flex-start;
+}
+
+.search-bar {
+	display: flex;
+	gap: 10px;
+	width: 100%;
+}
+.search-bar input {
+	flex: 1;
+	padding: 8px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+}
+.search-bar button {
+	padding: 8px 12px;
+	border: none;
+	background: #4a90e2;
+	color: #fff;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+.logout-btn {
+	align-self: flex-end;
+	background: none;
+	border: none;
+	color: #c00;
+	cursor: pointer;
+}
+
+.dashboard-main section {
+	margin-top: 20px;
+}
+
+.dashboard-main h2 {
+	font-size: 18px;
+	margin-bottom: 10px;
+}
+
+.dashboard-main ul {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	gap: 12px;
+}
+
+.dashboard-main li {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+	border: 1px solid #eee;
+	border-radius: 6px;
+	padding: 8px;
+	background: #fafafa;
+}
+
+.search-results {
+	margin-top: 20px;
+}
+.search-results ul {
+	list-style: none;
+	padding: 0;
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+	gap: 12px;
+}
+.search-results li {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	text-align: center;
+}

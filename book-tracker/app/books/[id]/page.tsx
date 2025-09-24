@@ -46,6 +46,32 @@ export default function BookPage() {
 		}
 	}
 
+	async function handleRecommend() {
+		if (!book) return;
+		try {
+			const res = await fetch("http://localhost:5002/api/recommended", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				credentials: "include",
+				body: JSON.stringify({
+					google_id: book.id,
+					title: book.title,
+					author: book.authors?.join(", "),
+					thumbnail_url: book.thumbnail,
+					publisher: book.publisher,
+					published_date: book.publishedDate,
+					description: book.description,
+				}),
+			});
+
+			const data = await res.json();
+			if (!res.ok) throw new Error(data.error || "Failed to recommend");
+			setMessage(`⭐ "${book.title}" has been recommended!`);
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : "Could not recommend.");
+		}
+	}
+
 	if (loading) return <p>Loading book...</p>;
 	if (error) return <p>Error: {error}</p>;
 	if (!book) return <p>Book not found.</p>;
@@ -91,6 +117,7 @@ export default function BookPage() {
 					<option value="to-read">📖 To Read</option>
 					<option value="have-read">✅ Have Read</option>
 				</select>
+				<button onClick={handleRecommend}>⭐ Recommend</button>
 			</div>
 		</div>
 	);
