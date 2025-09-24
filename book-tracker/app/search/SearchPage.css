@@ -22,7 +22,7 @@
 }
 
 .book-card {
-	background: #fff;
+	background: rgb(255, 255, 255);
 	border: 1px solid #ddd;
 	border-radius: 8px;
 	padding: 12px;
