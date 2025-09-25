@@ -108,7 +108,7 @@ const COLLECTIONS_API = "http://localhost:5002/api/collections";
 
 export async function saveBookToCollection(
 	book: Book,
-	collection: "favorites" | "to-read" | "have-read"
+	collection: "favorites" | "to-read" | "have-read" | "current-reads"
 ) {
 	const res = await fetch(`${COLLECTIONS_API}/${collection}`, {
 		method: "POST",
@@ -159,5 +159,41 @@ export async function recommendBook(book: Book) {
 	if (!res.ok) {
 		throw new Error(data.error || "Failed to recommend");
 	}
+	return data;
+}
+// to display them on frontend
+export async function getRecommendedBooks() {
+	const res = await fetch(RECOMMENDED_API, {
+		method: "GET",
+		credentials: "include",
+	});
+
+	const data = await res.json();
+	if (!res.ok) {
+		throw new Error(data.error || "Failed to fetch recommended books");
+	}
+	return data; // returns array of recommended books
+}
+
+// transfer Current Read → Have Read
+export async function transferCurrentRead(id: string) {
+	const res = await fetch(
+		`http://localhost:5002/api/collections/current-reads/${id}/transfer`,
+		{ method: "POST", credentials: "include" }
+	);
+	const data = await res.json();
+	if (!res.ok) throw new Error(data.error || "Failed to transfer");
+	return data; // { message, book }
+}
+
+export async function getCurrentReads() {
+	const res = await fetch(
+		"http://localhost:5002/api/collections/current-reads",
+		{
+			credentials: "include",
+		}
+	);
+	const data = await res.json();
+	if (!res.ok) throw new Error(data.error || "Failed to load current reads");
 	return data;
 }
