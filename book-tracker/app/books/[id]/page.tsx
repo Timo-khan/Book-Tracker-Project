@@ -31,7 +31,7 @@ export default function BookPage() {
 			.finally(() => setLoading(false));
 	}, [id]);
 
-	async function handleSave(collection: "favorites" | "to-read" | "have-read") {
+	async function handleSave(collection: "favorites" | "to-read" | "have-read" | "current-reads") {
 		if (!book) return;
 		try {
 			await saveBookToCollection(book, collection);
@@ -91,12 +91,13 @@ export default function BookPage() {
 				<select
 					defaultValue=""
 					onChange={(e) =>
-						handleSave(e.target.value as "favorites" | "to-read" | "have-read")
+						handleSave(e.target.value as "favorites" | "to-read" | "have-read" | "current-reads")
 					}
 				>
 					<option value="" disabled>
 						Add to...
 					</option>
+					<option value="current-reads">📚 Current Reads</option> {/* ✅ NEW */}
 					<option value="favorites">⭐ Favorites</option>
 					<option value="to-read">📖 To Read</option>
 					<option value="have-read">✅ Have Read</option>
