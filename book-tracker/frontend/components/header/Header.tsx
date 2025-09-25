@@ -105,12 +105,12 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 
 				<div className="search-pageRdr">
 					<div className="rdr-links">
-						<Link href="/">#</Link>
-						<Link href="/">Contact</Link>
-						<Link href="">About Us</Link>
+						<Link href="/" className="text">Community</Link>
+						<Link href="/" className="text">Contact</Link>
+						<Link href="" className="text">About Us</Link>
 					</div>
 
-					{/* 🔍 Search */}
+					{/* Search */}
 					<div className="search-container" ref={searchRef}>
 						<div className="search-box">
 						<input
