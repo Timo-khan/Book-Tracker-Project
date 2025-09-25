@@ -1,7 +1,15 @@
 "use client";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
-import "./Dashboard.css"
+import {
+	transferCurrentRead,
+	getUser,
+	getFavorites,
+	getToRead,
+	getHaveRead,
+	getCurrentReads,
+} from "@/frontend/services/bookServices";
+import "./Dashboard.css";
 
 type User = {
 	firstName: string;
@@ -15,6 +23,7 @@ type Book = {
 	title: string;
 	author?: string;
 	thumbnail_url?: string;
+	webReaderLink?: string;
 };
 
 const Dashboard = () => {
@@ -22,35 +31,32 @@ const Dashboard = () => {
 	const [favorites, setFavorites] = useState<Book[]>([]);
 	const [toRead, setToRead] = useState<Book[]>([]);
 	const [haveRead, setHaveRead] = useState<Book[]>([]);
+	const [currentReads, setCurrentReads] = useState<Book[]>([]);
 	const [loading, setLoading] = useState(true);
+
+	const [openSection, setOpenSection] = useState<
+		"favorites" | "to-read" | "have-read" | "currentReads" | null
+	>(null);
 
 	const apiUrl = "http://localhost:5002/api";
 
 	useEffect(() => {
 		async function fetchData() {
 			try {
-				// fetch user info
-				const userRes = await fetch(`${apiUrl}/me`, { credentials: "include" });
-				if (!userRes.ok) throw new Error("Not authenticated");
-				const userData = await userRes.json();
-				setUser(userData.user);
+				const [user, favorites, toRead, haveRead, currentReads] =
+					await Promise.all([
+						getUser(),
+						getFavorites(),
+						getToRead(),
+						getHaveRead(),
+						getCurrentReads(),
+					]);
 
-				// fetch books (plural + hyphenated routes)
-				const [favRes, toReadRes, haveReadRes] = await Promise.all([
-					fetch(`${apiUrl}/collections/favorites`, { credentials: "include" }),
-					fetch(`${apiUrl}/collections/to-read`, { credentials: "include" }),
-					fetch(`${apiUrl}/collections/have-read`, { credentials: "include" }),
-				]);
-
-				const [favData, toReadData, haveReadData] = await Promise.all([
-					favRes.json(),
-					toReadRes.json(),
-					haveReadRes.json(),
-				]);
-
-				setFavorites(favData);
-				setToRead(toReadData);
-				setHaveRead(haveReadData);
+				setUser(user);
+				setFavorites(favorites);
+				setToRead(toRead);
+				setHaveRead(haveRead);
+				setCurrentReads(currentReads);
 			} catch (err) {
 				console.error(err);
 				window.location.href = "/";
@@ -61,7 +67,6 @@ const Dashboard = () => {
 
 		fetchData();
 	}, []);
-
 	async function handleLogout() {
 		try {
 			const res = await fetch(`${apiUrl}/logout`, {
@@ -77,7 +82,7 @@ const Dashboard = () => {
 	}
 
 	async function handleRemove(
-		type: "favorites" | "to-read" | "have-read",
+		type: "favorites" | "to-read" | "have-read" | "current-reads",
 		id: string
 	) {
 		try {
@@ -94,9 +99,24 @@ const Dashboard = () => {
 			} else if (type === "have-read") {
 				setHaveRead(haveRead.filter((b) => b._id !== id));
 			}
+			if (type === "current-reads") {
+				setCurrentReads(currentReads.filter((b) => b._id !== id));
+			}
 		} catch (err) {
 			console.error(err);
 			alert("Could not remove book.");
+		}
+	}
+
+	async function handleTransfer(id: string) {
+		try {
+			const data = await transferCurrentRead(id);
+			// Remove from Current Reads, add to Have Read
+			setCurrentReads((prev) => prev.filter((b) => b._id !== id));
+			setHaveRead((prev) => [...prev, data.book]);
+		} catch (err) {
+			console.error(err);
+			alert("Could not transfer book.");
 		}
 	}
 
@@ -109,13 +129,74 @@ const Dashboard = () => {
 				Welcome {user.firstName} {user.lastName}!
 			</h1>
 			<p>Username: {user.username}</p>
-			<p>Email: {user.email}</p>
 			<button onClick={handleLogout}>Logout</button>
 
+			{/* Current Reads */}
+			<section className="dropdown">
+				<h2
+					onClick={() =>
+						setOpenSection(
+							openSection === "currentReads" ? null : "currentReads"
+						)
+					}
+				>
+					📚 Current Reads
+				</h2>
+
+				{openSection === "currentReads" && (
+					<ul>
+						{currentReads.length > 0 ? (
+							currentReads.map((book) => (
+								<li key={book._id}>
+									{book.thumbnail_url && (
+										<Image
+											src={book.thumbnail_url}
+											alt={book.title}
+											width={80}
+											height={120}
+										/>
+									)}
+									{book.title}
+
+									<div className="book-actions">
+										{book.webReaderLink && (
+											<a
+												href={book.webReaderLink}
+												target="_blank"
+												rel="noopener noreferrer"
+												className="read-online-btn"
+											>
+												Read Online
+											</a>
+										)}
+										<button onClick={() => handleTransfer(book._id)}>
+											Mark as Finished
+										</button>
+										<button
+											onClick={() => handleRemove("current-reads", book._id)}
+										>
+											Remove
+										</button>
+									</div>
+								</li>
+							))
+						) : (
+							<p>No Current Reads yet.</p>
+						)}
+					</ul>
+				)}
+			</section>
+
 			{/* Favorites */}
-			<section>
-				<h2>❤️ Favorites</h2>
-				{favorites.length > 0 ? (
+			<section className="dropdown">
+				<h2
+					onClick={() =>
+						setOpenSection(openSection === "favorites" ? null : "favorites")
+					}
+				>
+					⭐ Favorites
+				</h2>
+				{openSection === "favorites" && (
 					<ul>
 						{favorites.map((book) => (
 							<li key={book._id}>
@@ -127,25 +208,26 @@ const Dashboard = () => {
 										height={120}
 									/>
 								)}
-								{book.title} {book.author && `– ${book.author}`}
-								<button
-									onClick={() => handleRemove("favorites", book._id)}
-									style={{ marginLeft: "10px" }}
-								>
+								{book.title}
+								<button onClick={() => handleRemove("favorites", book._id)}>
 									Remove
 								</button>
 							</li>
 						))}
 					</ul>
-				) : (
-					<p>No favorites yet.</p>
 				)}
 			</section>
 
 			{/* To Read */}
-			<section>
-				<h2>📖 To Read</h2>
-				{toRead.length > 0 ? (
+			<section className="dropdown">
+				<h2
+					onClick={() =>
+						setOpenSection(openSection === "to-read" ? null : "to-read")
+					}
+				>
+					📖 To Read
+				</h2>
+				{openSection === "to-read" && (
 					<ul>
 						{toRead.map((book) => (
 							<li key={book._id}>
@@ -157,25 +239,26 @@ const Dashboard = () => {
 										height={120}
 									/>
 								)}
-								{book.title} {book.author && `– ${book.author}`}
-								<button
-									onClick={() => handleRemove("to-read", book._id)}
-									style={{ marginLeft: "10px" }}
-								>
+								{book.title}
+								<button onClick={() => handleRemove("to-read", book._id)}>
 									Remove
 								</button>
 							</li>
 						))}
 					</ul>
-				) : (
-					<p>Your To-Read list is empty.</p>
 				)}
 			</section>
 
 			{/* Have Read */}
-			<section>
-				<h2>✅ Have Read</h2>
-				{haveRead.length > 0 ? (
+			<section className="dropdown">
+				<h2
+					onClick={() =>
+						setOpenSection(openSection === "have-read" ? null : "have-read")
+					}
+				>
+					✅ Have Read
+				</h2>
+				{openSection === "have-read" && (
 					<ul>
 						{haveRead.map((book) => (
 							<li key={book._id}>
@@ -187,18 +270,13 @@ const Dashboard = () => {
 										height={120}
 									/>
 								)}
-								{book.title} {book.author && `– ${book.author}`}
-								<button
-									onClick={() => handleRemove("have-read", book._id)}
-									style={{ marginLeft: "10px" }}
-								>
+								{book.title}
+								<button onClick={() => handleRemove("have-read", book._id)}>
 									Remove
 								</button>
 							</li>
 						))}
 					</ul>
-				) : (
-					<p>You haven’t marked any books as read yet.</p>
 				)}
 			</section>
 		</div>
