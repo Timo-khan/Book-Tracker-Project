@@ -42,7 +42,7 @@ export default function SearchPage() {
 
 	async function handleSave(
 		book: Book,
-		collection: "favorites" | "to-read" | "have-read"
+		collection: "favorites" | "to-read" | "have-read" | "current-reads"
 	) {
 		try {
 			await saveBookToCollection(book, collection);
@@ -102,6 +102,12 @@ export default function SearchPage() {
 
 							{/* Buttons */}
 							<div className="actions">
+								<button
+									onClick={() => handleSave(book, "current-reads")}
+									className="current-btn"
+								>
+									📚 Current Reads
+								</button>
 								<button
 									onClick={() => handleSave(book, "favorites")}
 									className="favorite-btn"
