@@ -71,6 +71,11 @@
 	opacity: 0.8;
 }
 
+.current-btn {
+  border-color: #9b59b6;
+  color: #9b59b6;
+}
+
 .favorite-btn {
 	border-color: #e74c3c;
 	color: #e74c3c;
