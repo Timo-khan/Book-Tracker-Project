@@ -1,3 +1,4 @@
+// Shape of a Book object that your app will use internally
 export interface Book {
 	id: string;
 	title: string;
@@ -14,6 +15,7 @@ export interface Book {
 	infoLink?: string;
 }
 
+// Shape of a single book item as returned from Google Books API
 export interface GoogleBookItem {
 	id: string;
 	volumeInfo: {
@@ -37,6 +39,7 @@ export interface GoogleBookItem {
 	};
 }
 
+// Shape of the entire response from a Google Books API search
 export interface GoogleBooksResponse {
 	items?: GoogleBookItem[];
 }
@@ -193,6 +196,56 @@ export async function getCurrentReads() {
 			credentials: "include",
 		}
 	);
+	const data = await res.json();
+	if (!res.ok) throw new Error(data.error || "Failed to load current reads");
+	return data;
+}
+
+const API_BASE = "http://localhost:5002/api";
+
+// Fetch the currently authenticated user's info (from /me endpoint)
+export async function getUser() {
+	const res = await fetch(`${API_BASE}/me`, { credentials: "include" });
+	const data = await res.json();
+	if (!res.ok) throw new Error(data.error || "Not authenticated");
+	return data.user;
+}
+
+// Fetch all books saved in the "Favorites" collection for the logged-in user
+export async function getFavorites() {
+	const res = await fetch(`${API_BASE}/collections/favorites`, {
+		credentials: "include",
+	});
+	const data = await res.json();
+	if (!res.ok) throw new Error(data.error || "Failed to load favorites");
+	return data;
+}
+
+// Fetch all books saved in the "To Read" collection for the logged-in user
+export async function getToRead() {
+	const res = await fetch(`${API_BASE}/collections/to-read`, {
+		credentials: "include",
+	});
+	const data = await res.json();
+	if (!res.ok) throw new Error(data.error || "Failed to load to-read");
+	return data;
+}
+
+// Fetch all books saved in the "Have Read" collection for the logged-in user
+export async function getHaveRead() {
+	const res = await fetch(`${API_BASE}/collections/have-read`, {
+		credentials: "include",
+	});
+	const data = await res.json();
+	if (!res.ok) throw new Error(data.error || "Failed to load have-read");
+	return data;
+}
+
+// Fetch all books currently being read (the "Current Reads" collection) for the logged-in user
+export async function getCurrentRead() {
+	const res = await fetch(`${API_BASE}/collections/current-reads`, {
+		credentials: "include",
+	});
 	const data = await res.json();
 	if (!res.ok) throw new Error(data.error || "Failed to load current reads");
 	return data;
