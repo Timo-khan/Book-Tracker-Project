@@ -97,7 +97,7 @@ export default function BookPage() {
 					<option value="" disabled>
 						Add to...
 					</option>
-					<option value="current-reads">📚 Current Reads</option> {/* ✅ NEW */}
+					<option value="current-reads">📚 Current Reads</option> {/*NEW */}
 					<option value="favorites">⭐ Favorites</option>
 					<option value="to-read">📖 To Read</option>
 					<option value="have-read">✅ Have Read</option>
