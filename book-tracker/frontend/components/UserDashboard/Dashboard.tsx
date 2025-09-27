@@ -109,7 +109,7 @@ const Dashboard = () => {
 		}
 	}
 
-	if (loading) return <p>Loading dashboard...</p>;
+	if (loading) return <div className="loading-bar" />;
 	if (!user) return null;
 
 	return (
@@ -122,7 +122,7 @@ const Dashboard = () => {
 
 			<div className="sub-wrapper">
 				<div className="quote-cont">
-					<p>Quotes Of The Day</p>
+					<h2>Quotes Of The Day</h2>
 					<div>
 						<QuoteRotator />
 					</div>
