@@ -4,15 +4,18 @@ import Link from "next/link";
 import Image from "next/image";
 import React, { useState, useEffect, useRef } from "react";
 import { useRouter, usePathname } from "next/navigation";
-import { searchBooks, Book } from "@/frontend/services/bookServices";
+import { Book } from "@/frontend/commonTypes/types";
+import { searchBooks, } from "@/frontend/services/bookServices";
 import "./Header.css";
 
 interface HeaderProps {
 	onLoginClick?: () => void;
 	onSignupClick?: () => void;
+	user?: { username: string; image?: string }; //allow passing user info
+  onLogout?: () => void;  //logout handler
 }
 
-const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
+const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 	const [isHidden, setIsHidden] = useState(false); // hide header on scroll down
 	const [lastScrollY, setLastScrollY] = useState(0); // track scroll position
 	const [query, setQuery] = useState(""); // search input text
@@ -20,7 +23,10 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 	const [loading, setLoading] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
 	const router = useRouter(); // Next.js router instance to programmatically navigate, router.push("/login"))
+	const [openProfile, setOpenProfile] = useState(false);
 	const pathname = usePathname();// Gives you the current URL path (e.g., "/login", "/dashboard")
+	const [menuOpen, setMenuOpen] = useState(false);
+	
 
 	// Hide header on scroll down, show on scroll up
 	useEffect(() => {
@@ -75,6 +81,26 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
+		// --- Close profile dropdown on outside click 
+  const profileRef = useRef<HTMLDivElement | null>(null);
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setOpenProfile(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleLogoutClick = () => {
+  setOpenProfile(false); // close dropdown
+  if (onLogout) onLogout();
+};
+
 	// Navigate to /login when button clicked
 	const handleLogin = () => {
 		if (onLoginClick) {
@@ -104,11 +130,20 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 				</div>
 
 				<div className="search-pageRdr">
-					<div className="rdr-links">
+					<nav className={`rdr-links ${menuOpen ? "open" : ""}`}>
 						<Link href="/" className="text">Community</Link>
 						<Link href="/" className="text">Contact</Link>
 						<Link href="" className="text">About Us</Link>
-					</div>
+					</nav>
+
+					{/* Hamburger Button (mobile only) */}
+<button
+  className="menu-toggle"
+  onClick={() => setMenuOpen((prev) => !prev)}
+  aria-label="Toggle Menu"
+>
+  ☰
+</button>
 
 					{/* Search */}
 					<div className="search-container" ref={searchRef}>
@@ -168,29 +203,60 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick }) => {
 				</div>
 
 				<div className="loginSection" aria-label="User">
-					{/*Hide on login, signup, and dashboard */}
-					{pathname !== "/login" &&
-						pathname !== "/signup" &&
-						pathname !== "/dashboard" && (
-							<button onClick={handleLogin} className="loginCta">
-								Let&apos;s log in
-							</button>
-						)}
+  {!user ? (
+    <>
+      <button onClick={handleLogin} className="loginCta">
+        Let&apos;s log in
+      </button>
+      {pathname === "/" && ( // only show video on home
+        <div className="navVideoWrap" aria-hidden="true">
+          <video
+            className="navVideo"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            poster="/videos/loop-poster.jpg"
+          >
+            <source src="/videos/BOOK WALKING.mp4" type="video/mp4" />
+          </video>
+        </div>
+      )}
+    </>
+  ) : (
+    <div className="profile-wrapper" ref={profileRef}>
+      <button
+  className="profile-btn"
+  onClick={() => setOpenProfile((prev) => !prev)}
+>
+  <div className="profile-circle">
+  {user?.image ? (
+    <Image
+      src={user.image}
+      alt="Profile"
+      width={50}
+      height={50}
+      className="profile-img"
+    />
+  ) : (
+    <span className="profile-placeholder">👤</span> // fallback icon/text
+  )}
+</div>
+</button>
 
-					<div className="navVideoWrap" aria-hidden="true">
-						<video
-							className="navVideo"
-							autoPlay
-							muted
-							loop
-							playsInline
-							preload="metadata"
-							poster="/videos/loop-poster.jpg"
-						>
-							<source src="/videos/BOOK WALKING.mp4" type="video/mp4" />
-						</video>
-					</div>
-				</div>
+      {openProfile && (
+        <div className="profile-dropdown">
+          <p className="profile-username">👤 {user.username}</p>
+          <button onClick={handleLogoutClick} className="logout-btn">
+            Logout
+          </button>
+        </div>
+      )}
+    </div>
+  )}
+</div>
+				
 			</div>
 		</header>
 	);
