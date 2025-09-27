@@ -1,0 +1,137 @@
+/* Recommended Section */
+body {
+    font-family: 'Roboto', sans-serif;
+}
+
+.books-section.recommended {
+  max-width: 860px;
+  margin: 0 auto; /* center it */
+  padding: 20px 0;
+}
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.section-header h2{
+  font-weight: 700;
+	font-size: 18px;
+	margin-left: 10px;
+	color: black;
+}
+
+.book-list-wrapper {
+  background: rgba(0, 0, 0, 0.147);
+  border-radius: 15px;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+/* Default: Desktop (scroll row) */
+.book-list {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  border-radius: 15px;
+  padding-right: 50px; /* space for arrow */
+  scroll-snap-type: x mandatory;
+}
+
+.book-card {
+  flex: 0 0 150px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+  scroll-snap-align: start;
+}
+
+.book-card img {
+  margin-top: 10px;
+  width: 120px;
+  height: 180px;
+  object-fit: cover;
+  border-radius: 6px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease;
+}
+
+.book-card img:hover {
+  transform: scale(1.05);
+}
+
+/* Circle button */
+.circle-btn {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  border: 1px solid #444;
+  background: rgb(145, 41, 145);
+  cursor: pointer;
+  display: flex;
+  color: #f3f3f3;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  transition: all 0.2s ease;
+  margin-top: 10px;
+}
+
+.circle-btn:hover {
+  background: rgb(236, 236, 236);
+  color: black;
+}
+
+/* Loader */
+.loader {
+  border: 6px solid #f3f3f3;
+  border-top: 6px solid #6d28d9;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 0.8s linear infinite;
+  margin: 40px auto;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 🔹 Tablet: Wrap into grid (4 per row) */
+@media (max-width: 1024px) {
+  .book-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    overflow-x: visible; /* remove scroll */
+    padding-right: 0;
+  }
+
+  .circle-btn {
+    align-self: flex-end;
+  }
+}
+
+/* 🔹 Mobile: At least 3 per row */
+@media (max-width: 768px) {
+  .book-list {
+    grid-template-columns: repeat(3, 1fr); /* exactly 3 per row */
+    gap: 10px;
+  }
+
+  .book-card {
+    flex: unset;
+  }
+
+  .book-card img {
+    width: 100%;
+    height: auto;
+    max-height: 160px;
+  }
+}

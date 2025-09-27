@@ -1,46 +1,54 @@
 "use client";
-import React from "react";
-// import Image from "next/image";
+import Link from "next/link";
 import "./homePage.css";
+import QuoteRotator from "../quotes/quotes";
+import Recommended from "../recommended/Recommended";
 
 const Homepage = () => {
 	return (
 		<div className="home">
+			<div className="loading-bar"></div>
 			{/* Hero section */}
 			<section className="hero">
 				<div className="hero-overlay">
-                    <div className="welcome">
-					<h2>Hi there!</h2>
-					<p>Let&apos;s discover your next favorite book.</p>
-					<div className="hero-buttons">
-						<button className="primary-btn">Sign up</button>
-						<button className="secondary-btn">Log in</button>
-                        </div>
+					<div className="welcome">
+						<h2>Hi there!</h2>
+						<p>
+							Glad you&apos;re here<br></br> let&apos;s start your next chapter
+							together.
+						</p>
+						<div className="hero-buttons">
+							<Link href="/signup" className="primary-b">
+								Sign up
+							</Link>
+							<Link href="/login" className="secondary-b">
+								Log in
+							</Link>
+						</div>
 					</div>
 				</div>
 			</section>
 
-			{/* Popular This Week */}
-			<section className="books-section">
-				<h3>Popular This Week</h3>
-				<div className="book-list">
-					{/* <Image src="/books/book1.jpg" alt="Book 1" />
-					<Image src="/books/book2.jpg" alt="Book 2" />
-					<Image src="/books/book3.jpg" alt="Book 3" />
-					<Image src="/books/book4.jpg" alt="Book 4" /> */}
+			<div className="sub-wrap1">
+				<div className="recoPopular-wrap">
+					{/* Recommended Section */}
+					<section className="books-section recommended">
+						<Recommended />
+					</section>
+					{/* Popular This Week */}
+					<section className="books-section">
+						<h3>Popular This Week</h3>
+						<div className="book-list"></div>
+					</section>
 				</div>
-			</section>
-
-			{/* Giveaways */}
-			<section className="books-section">
-				<h3>Recommended</h3>
-				<div className="book-list">
-					{/* <Image src="/books/book5.jpg" alt="Book 5" />
-					<Image src="/books/book6.jpg" alt="Book 6" />
-					<Image src="/books/book7.jpg" alt="Book 7" />
-					<Image src="/books/book8.jpg" alt="Book 8" /> */}
-				</div>
-			</section>
+				{/* Quotes Section */}
+				<section className="quotes-section">
+					<h2 className="quot">Quotes Of The Day</h2>
+					<div className="quote-rotator-wrap">
+						<QuoteRotator />
+					</div>
+				</section>
+			</div>
 		</div>
 	);
 };

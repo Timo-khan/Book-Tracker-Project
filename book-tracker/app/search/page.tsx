@@ -4,17 +4,18 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { Book } from "@/frontend/commonTypes/types";
 import {
 	searchBooks,
 	saveBookToCollection,
-	Book,
+	recommendBook,
 } from "@/frontend/services/bookServices";
 import "./SearchPage.css";
 
 export default function SearchPage() {
-	const searchParams = useSearchParams();
-	const query = searchParams.get("q") || "";
-	const [books, setBooks] = useState<Book[]>([]);
+	const searchParams = useSearchParams(); // read query params
+	const query = searchParams.get("q") || ""; // extract "q" param (search term)
+	const [books, setBooks] = useState<Book[]>([]); // search results
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [message, setMessage] = useState<string | null>(null);
@@ -22,17 +23,26 @@ export default function SearchPage() {
 	useEffect(() => {
 		if (!query) return;
 		setLoading(true);
-		searchBooks(query)
-			.then(setBooks)
+		searchBooks(query) //call backend/Google API
+			.then(setBooks) // store results
 			.catch((err) =>
 				setError(err instanceof Error ? err.message : "Failed to fetch books")
 			)
-			.finally(() => setLoading(false));
+			.finally(() => setLoading(false)); //stop loading
 	}, [query]);
+
+	async function handleRecommend(book: Book) {
+		try {
+			await recommendBook(book); //call service
+			setMessage(`"${book.title}" has been recommended!`);
+		} catch (err: unknown) {
+			setError(err instanceof Error ? err.message : "Something went wrong.");
+		}
+	}
 
 	async function handleSave(
 		book: Book,
-		collection: "favorites" | "to-read" | "have-read"
+		collection: "favorites" | "to-read" | "have-read" | "current-reads"
 	) {
 		try {
 			await saveBookToCollection(book, collection);
@@ -44,7 +54,14 @@ export default function SearchPage() {
 	}
 
 	if (!query) return <p>Please enter a search query.</p>;
-	if (loading) return <p>Loading search results...</p>;
+	if (loading) {
+		return (
+			<div className="search-page">
+				<h1>Search results for “{query}”</h1>
+				<div className="loading-bar" />
+			</div>
+		);
+	}
 	if (error) return <p>Error: {error}</p>;
 
 	return (
@@ -86,10 +103,16 @@ export default function SearchPage() {
 							{/* Buttons */}
 							<div className="actions">
 								<button
+									onClick={() => handleSave(book, "current-reads")}
+									className="current-btn"
+								>
+									📚 Current Reads
+								</button>
+								<button
 									onClick={() => handleSave(book, "favorites")}
 									className="favorite-btn"
 								>
-									Favorite
+									⭐ Favorite
 								</button>
 								<button
 									onClick={() => handleSave(book, "to-read")}
@@ -102,6 +125,12 @@ export default function SearchPage() {
 									className="have-read-btn"
 								>
 									Have-Read
+								</button>
+								<button
+									onClick={() => handleRecommend(book)}
+									className="recommend-btn"
+								>
+									Recommend
 								</button>
 							</div>
 

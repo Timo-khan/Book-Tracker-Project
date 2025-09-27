@@ -1,0 +1,39 @@
+body {
+  font-family: 'Roboto', sans-serif;
+}
+
+.quotes-section {
+	display: flex;
+	justify-content: center;
+	padding: 2rem 0;
+}
+
+.quote-card {
+	background: rgb(230, 227, 230);
+	border-radius: 12px;
+	padding: 1.5rem;
+	max-width: 600px;
+	text-align: center;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	font-size: 1.2rem;
+	line-height: 1.6;
+	color: #333;
+	min-height: 120px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	opacity: 0;
+}
+
+.fade {
+	animation: fadeIn 1s ease forwards; /* only runs once */
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
