@@ -2,6 +2,7 @@ html,
 body {
 	margin: 0;
 	padding: 0;
+	font-family: "Roboto", sans-serif;
 	/* padding-top: 90px; */
 }
 
@@ -9,6 +10,12 @@ body {
 	color: #fff;
 	min-height: 100vh;
 	text-align: center;
+}
+
+.sub-wrap1 {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
 }
 
 .hero {
@@ -31,7 +38,16 @@ body {
 }
 
 .welcome {
-	margin-top: 200px;
+	margin-top: 300px;
+}
+
+.recoPopular-wrap {
+	display: flex;
+	justify-content: center;
+	flex-direction: column;
+	margin-left: 150px;
+	/* background: #f43f5e; */
+	width: 45%;
 }
 
 .hero h2 {
@@ -81,57 +97,40 @@ body {
 	will-change: transform;
 }
 
-.books-section {
-	margin: 3rem 0;
-	text-align: left;
-}
-
 .books-section h3 {
-	color: #00bcd4;
+	color: black;
 	margin-bottom: 1rem;
 }
 
-.book-list {
-	display: flex;
-	gap: 1rem;
-	overflow-x: auto;
-	padding-bottom: 1rem;
-}
-
-.book-list img {
-	height: 180px;
-	border-radius: 5px;
-	box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.3);
-	flex-shrink: 0;
-	cursor: pointer;
-	transition: transform 0.2s ease-in-out;
-}
-
-.book-list img:hover {
-	transform: scale(1.05);
-}
+/* .quotes-wrap {
+	width: 100%;
+	background: #6d28d9;
+} */
 
 .quotes-section {
 	display: flex;
+	flex-direction: column;
 	justify-content: center;
-	padding: 2rem 0;
+	align-items: center;
+	width: 60%;
+	min-height: 200px;
 }
 
-.quote-card {
-	background: #fff;
-	border-radius: 12px;
-	padding: 1.5rem;
-	max-width: 600px;
-	text-align: center;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-	font-size: 1.2rem;
-	line-height: 1.6;
-	color: #333;
-	min-height: 120px;
+.quotes-section h2 {
+	font-weight: 700;
+	font-size: 18px;
+	margin-left: 10px;
+	color: black;
+	margin: 0; /* remove default margins */
+	margin-bottom: -20px; /* small controlled space */
+}
+
+.quote-rotator-wrap {
 	display: flex;
-	align-items: center;
-	justify-content: center;
-	opacity: 0;
+	justify-content: center; /* horizontal centering */
+	align-items: center; /* vertical centering (if taller) */
+	width: 100%; /* expand across full quotes-section */
+	margin-top: 0;
 }
 
 .fade {
@@ -144,5 +143,36 @@ body {
 	}
 	to {
 		opacity: 1;
+	}
+}
+
+/*Loading bar container */
+.loading-bar {
+	position: relative;
+	width: 100%;
+	height: 4px; /* bar thickness */
+	background: rgba(0, 0, 0, 0.1); /* faint background */
+	overflow: hidden;
+}
+
+/*Animated gradient that slides across */
+.loading-bar::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -50%;
+	height: 100%;
+	width: 50%;
+	background: linear-gradient(to right, #f43f5e, #a21caf, #f43f5e);
+	animation: slide-loading 1s linear infinite;
+	border-radius: 4px;
+}
+
+@keyframes slide-loading {
+	from {
+		left: -50%;
+	}
+	to {
+		left: 100%;
 	}
 }
