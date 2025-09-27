@@ -119,7 +119,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 			<div className="headerContainer">
 				<div className="Brand-container">
 					<div className="brand-name">
-						<Link href="/" className="brand">
+						<Link href={user ? "/dashboard" : "/"} className="brand">
 							Book Heaven
 						</Link>
 					</div>
