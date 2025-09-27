@@ -1,21 +1,78 @@
+.main-wrap {
+	min-height: 100vh;
+	position: relative;
+	overflow: hidden;
+	z-index: 0;
+	padding-top: 80px;
+}
+
+.main-wrap::before {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 900px;
+
+	/* Apply your gradient */
+	background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9);
+
+	/* Wave mask */
+	-webkit-mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'><path d='M0,160 C120,220 280,80 480,160 C680,240 880,120 1440,200 L1440,0 L0,0 Z'/></svg>")
+		no-repeat top center / cover;
+	mask: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320' preserveAspectRatio='none'><path d='M0,160 C120,220 280,80 480,160 C680,240 880,120 1440,200 L1440,0 L0,0 Z'/></svg>")
+		no-repeat top center / cover;
+
+	z-index: -1; /* push it BEHIND everything */
+}
+
+/*Loading bar animation */
+.loading-bar {
+	position: relative;
+	height: 4px;
+	width: 100%;
+	border-radius: 4px;
+	overflow: hidden;
+	background: rgba(0, 0, 0, 0.1); /* base line */
+	margin: 20px 0;
+	margin-top: 70px;
+}
+
+.loading-bar::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -50%;
+	height: 100%;
+	width: 50%;
+	background: linear-gradient(to right, #f43f5e, #a21caf, white);
+	animation: slide-loading 1s linear infinite;
+	border-radius: 4px;
+}
+
 .book-detail {
-	padding-top: 90px;
 	display: grid;
 	grid-template-columns: 250px 1fr 200px;
 	gap: 20px;
 	padding: 20px;
 	color: #fff;
-	background: #1c1c1c;
+	background-color: rgba(0, 0, 0, 0.325);
+	border-radius: 8px;
+	align-items: start;
 }
 
 .book-cover img {
 	border-radius: 6px;
 	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+	width: 100%;
+	height: auto;
+	object-fit: cover;
 }
 
 .book-info h1 {
 	font-size: 2rem;
 	margin-bottom: 10px;
+	word-break: break-word; /* prevent overflow */
 }
 
 .book-info h3 {
@@ -32,20 +89,111 @@
 .book-actions {
 	display: flex;
 	flex-direction: column;
-	align-items: flex-start;
+	align-items: flex-start; /* stay left on desktop */
+	gap: 12px;
+	z-index: 5;
+	position: relative;
 }
 
+/* Recommend Button */
+.recommend-btn {
+	padding: 14px 28px;
+	border-radius: 10px;
+	border: 0;
+	background-color: rgb(239, 239, 239);
+	letter-spacing: 1.2px;
+	font-size: 15px;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.recommend-btn span {
+	background: linear-gradient(to right, #f43f5e, #a21caf, #6d28d9);
+	-webkit-background-clip: text;
+	-webkit-text-fill-color: transparent;
+	background-clip: text;
+}
+
+.recommend-btn:hover {
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+	transform: translateY(-2px);
+}
+
+.recommend-btn:active {
+	transform: translateY(2px);
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+/* Dropdown */
 .book-actions select {
-	padding: 8px 12px;
+	padding: 10px 14px;
 	border-radius: 6px;
-	border: 1px solid #444;
-	background: #2a2a2a;
-	color: #fff;
+	background: rgb(239, 239, 239); /* ✅ solid light gray background */
+	color: black; /* ✅ readable text */
 	font-size: 0.95rem;
 	cursor: pointer;
+	width: 100%;
+	max-width: 220px;
+	border: 1px solid #ccc;
+	z-index: 10;
+}
+
+.book-actions select:hover {
+	background: rgba(0, 0, 0, 0.1); /* ✅ subtle darker hover */
 }
 
 .success-msg {
 	color: #27ae60;
 	margin-top: 10px;
+	font-weight: bold;
+	text-align: center;
+}
+
+/* Tablet layout: dropdown ABOVE title */
+@media (max-width: 1024px) {
+	.book-detail {
+		grid-template-columns: 200px 1fr;
+		grid-template-areas:
+			"cover actions"
+			"cover info"; /* ✅ dropdown now above info */
+		gap: 16px;
+	}
+
+	.book-cover {
+		grid-area: cover;
+	}
+	.book-info {
+		grid-area: info;
+	}
+	.book-actions {
+		grid-area: actions;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: center;
+		margin-bottom: 8px; /* spacing between dropdown and title */
+	}
+}
+
+/* Mobile: dropdown full width above info */
+@media (max-width: 768px) {
+	.book-detail {
+		padding: 15px;
+		gap: 20px;
+	}
+
+	.book-actions {
+		grid-area: actions;
+		flex-direction: column;
+		align-items: center;
+		width: 100%;
+		margin-bottom: 12px;
+	}
+
+	.book-actions select,
+	.recommend-btn {
+		width: 100%;
+		max-width: 300px;
+	}
 }
