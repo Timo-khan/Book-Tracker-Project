@@ -49,6 +49,14 @@
 	animation: slide-loading 1s linear infinite;
 	border-radius: 4px;
 }
+@keyframes slide-loading {
+	from {
+		left: -50%;
+	}
+	to {
+		left: 100%;
+	}
+}
 
 .book-detail {
 	display: grid;
