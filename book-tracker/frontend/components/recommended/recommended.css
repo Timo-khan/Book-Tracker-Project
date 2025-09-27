@@ -16,6 +16,13 @@ body {
   margin-bottom: 15px;
 }
 
+.section-header h2{
+  font-weight: 700;
+	font-size: 18px;
+	margin-left: 10px;
+	color: black;
+}
+
 .book-list-wrapper {
   background: rgba(0, 0, 0, 0.147);
   border-radius: 15px;
