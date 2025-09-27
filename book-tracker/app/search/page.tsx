@@ -4,18 +4,18 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import { Book } from "@/frontend/commonTypes/types";
 import {
 	searchBooks,
 	saveBookToCollection,
-	Book,
 	recommendBook,
 } from "@/frontend/services/bookServices";
 import "./SearchPage.css";
 
 export default function SearchPage() {
-	const searchParams = useSearchParams();
-	const query = searchParams.get("q") || "";
-	const [books, setBooks] = useState<Book[]>([]);
+	const searchParams = useSearchParams(); // read query params
+	const query = searchParams.get("q") || ""; // extract "q" param (search term)
+	const [books, setBooks] = useState<Book[]>([]); // search results
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const [message, setMessage] = useState<string | null>(null);
@@ -23,12 +23,12 @@ export default function SearchPage() {
 	useEffect(() => {
 		if (!query) return;
 		setLoading(true);
-		searchBooks(query)
-			.then(setBooks)
+		searchBooks(query) //call backend/Google API
+			.then(setBooks) // store results
 			.catch((err) =>
 				setError(err instanceof Error ? err.message : "Failed to fetch books")
 			)
-			.finally(() => setLoading(false));
+			.finally(() => setLoading(false)); //stop loading
 	}, [query]);
 
 	async function handleRecommend(book: Book) {
