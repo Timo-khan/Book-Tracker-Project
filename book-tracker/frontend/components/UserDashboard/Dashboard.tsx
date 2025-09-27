@@ -10,6 +10,8 @@ import {
 	getCurrentReads,
 } from "@/frontend/services/bookServices";
 import "./Dashboard.css";
+import QuoteRotator from "../quotes/quotes";
+import Recommended from "../recommended/Recommended";
 
 type User = {
 	firstName: string;
@@ -67,19 +69,6 @@ const Dashboard = () => {
 
 		fetchData();
 	}, []);
-	async function handleLogout() {
-		try {
-			const res = await fetch(`${apiUrl}/logout`, {
-				method: "POST",
-				credentials: "include",
-			});
-			if (!res.ok) throw new Error("Logout failed");
-			window.location.href = "/";
-		} catch (err) {
-			console.error(err);
-			alert("Something went wrong while logging out");
-		}
-	}
 
 	async function handleRemove(
 		type: "favorites" | "to-read" | "have-read" | "current-reads",
@@ -125,160 +114,187 @@ const Dashboard = () => {
 
 	return (
 		<div className="dashboard">
-			<h1>
-				Welcome {user.firstName} {user.lastName}!
-			</h1>
-			<p>Username: {user.username}</p>
-			<button onClick={handleLogout}>Logout</button>
+			<div>
+				<h1>
+					Hello {user.firstName} {user.lastName}!
+				</h1>
+			</div>
 
-			{/* Current Reads */}
-			<section className="dropdown">
-				<h2
-					onClick={() =>
-						setOpenSection(
-							openSection === "currentReads" ? null : "currentReads"
-						)
-					}
-				>
-					📚 Current Reads
-				</h2>
+			<div className="sub-wrapper">
+				<div className="quote-cont">
+					<p>Quotes Of The Day</p>
+					<div>
+						<QuoteRotator />
+					</div>
+					<Recommended />
+				</div>
 
-				{openSection === "currentReads" && (
-					<ul>
-						{currentReads.length > 0 ? (
-							currentReads.map((book) => (
-								<li key={book._id}>
-									{book.thumbnail_url && (
-										<Image
-											src={book.thumbnail_url}
-											alt={book.title}
-											width={80}
-											height={120}
-										/>
-									)}
-									{book.title}
+				<div className="collection-wrap">
+					{/* Current Reads */}
+					<section className="dropdown">
+						<h2
+							onClick={() =>
+								setOpenSection(
+									openSection === "currentReads" ? null : "currentReads"
+								)
+							}
+						>
+							📚 Current Reads
+						</h2>
 
-									<div className="book-actions">
-										{book.webReaderLink && (
-											<a
-												href={book.webReaderLink}
-												target="_blank"
-												rel="noopener noreferrer"
-												className="read-online-btn"
-											>
-												Read Online
-											</a>
+						{openSection === "currentReads" && (
+							<ul>
+								{currentReads.length > 0 ? (
+									currentReads.map((book) => (
+										<li key={book._id}>
+											{book.thumbnail_url && (
+												<Image
+													src={book.thumbnail_url}
+													alt={book.title}
+													width={80}
+													height={120}
+												/>
+											)}
+											{/* {book.title} */}
+
+											<div className="book-actions">
+												{book.webReaderLink && (
+													<a
+														href={book.webReaderLink}
+														target="_blank"
+														rel="noopener noreferrer"
+														className="read-online-btn"
+													>
+														Read Online
+													</a>
+												)}
+												<button
+													onClick={() => handleTransfer(book._id)}
+													className="Transfer"
+												>
+													Finished
+												</button>
+												<button
+													onClick={() =>
+														handleRemove("current-reads", book._id)
+													}
+													className="Remove"
+												>
+													Remove
+												</button>
+											</div>
+										</li>
+									))
+								) : (
+									<p>No Current Reads yet.</p>
+								)}
+							</ul>
+						)}
+					</section>
+
+					{/* Favorites */}
+					<section className="dropdown">
+						<h2
+							onClick={() =>
+								setOpenSection(openSection === "favorites" ? null : "favorites")
+							}
+						>
+							⭐ Favorites
+						</h2>
+						{openSection === "favorites" && (
+							<ul>
+								{favorites.map((book) => (
+									<li key={book._id}>
+										{book.thumbnail_url && (
+											<Image
+												src={book.thumbnail_url}
+												alt={book.title}
+												width={80}
+												height={120}
+											/>
 										)}
-										<button onClick={() => handleTransfer(book._id)}>
-											Mark as Finished
-										</button>
+										{/* {book.title} */}
 										<button
-											onClick={() => handleRemove("current-reads", book._id)}
+											onClick={() => handleRemove("favorites", book._id)}
+											className="Remove"
 										>
 											Remove
 										</button>
-									</div>
-								</li>
-							))
-						) : (
-							<p>No Current Reads yet.</p>
+									</li>
+								))}
+							</ul>
 						)}
-					</ul>
-				)}
-			</section>
+					</section>
 
-			{/* Favorites */}
-			<section className="dropdown">
-				<h2
-					onClick={() =>
-						setOpenSection(openSection === "favorites" ? null : "favorites")
-					}
-				>
-					⭐ Favorites
-				</h2>
-				{openSection === "favorites" && (
-					<ul>
-						{favorites.map((book) => (
-							<li key={book._id}>
-								{book.thumbnail_url && (
-									<Image
-										src={book.thumbnail_url}
-										alt={book.title}
-										width={80}
-										height={120}
-									/>
-								)}
-								{book.title}
-								<button onClick={() => handleRemove("favorites", book._id)}>
-									Remove
-								</button>
-							</li>
-						))}
-					</ul>
-				)}
-			</section>
+					{/* To Read */}
+					<section className="dropdown">
+						<h2
+							onClick={() =>
+								setOpenSection(openSection === "to-read" ? null : "to-read")
+							}
+						>
+							📖 To Read
+						</h2>
+						{openSection === "to-read" && (
+							<ul>
+								{toRead.map((book) => (
+									<li key={book._id}>
+										{book.thumbnail_url && (
+											<Image
+												src={book.thumbnail_url}
+												alt={book.title}
+												width={80}
+												height={120}
+											/>
+										)}
+										{/* {book.title} */}
+										<button
+											onClick={() => handleRemove("to-read", book._id)}
+											className="Remove"
+										>
+											Remove
+										</button>
+									</li>
+								))}
+							</ul>
+						)}
+					</section>
 
-			{/* To Read */}
-			<section className="dropdown">
-				<h2
-					onClick={() =>
-						setOpenSection(openSection === "to-read" ? null : "to-read")
-					}
-				>
-					📖 To Read
-				</h2>
-				{openSection === "to-read" && (
-					<ul>
-						{toRead.map((book) => (
-							<li key={book._id}>
-								{book.thumbnail_url && (
-									<Image
-										src={book.thumbnail_url}
-										alt={book.title}
-										width={80}
-										height={120}
-									/>
-								)}
-								{book.title}
-								<button onClick={() => handleRemove("to-read", book._id)}>
-									Remove
-								</button>
-							</li>
-						))}
-					</ul>
-				)}
-			</section>
-
-			{/* Have Read */}
-			<section className="dropdown">
-				<h2
-					onClick={() =>
-						setOpenSection(openSection === "have-read" ? null : "have-read")
-					}
-				>
-					✅ Have Read
-				</h2>
-				{openSection === "have-read" && (
-					<ul>
-						{haveRead.map((book) => (
-							<li key={book._id}>
-								{book.thumbnail_url && (
-									<Image
-										src={book.thumbnail_url}
-										alt={book.title}
-										width={80}
-										height={120}
-									/>
-								)}
-								{book.title}
-								<button onClick={() => handleRemove("have-read", book._id)}>
-									Remove
-								</button>
-							</li>
-						))}
-					</ul>
-				)}
-			</section>
+					{/* Have Read */}
+					<section className="dropdown">
+						<h2
+							onClick={() =>
+								setOpenSection(openSection === "have-read" ? null : "have-read")
+							}
+						>
+							✅ Have Read
+						</h2>
+						{openSection === "have-read" && (
+							<ul>
+								{haveRead.map((book) => (
+									<li key={book._id}>
+										{book.thumbnail_url && (
+											<Image
+												src={book.thumbnail_url}
+												alt={book.title}
+												width={80}
+												height={120}
+											/>
+										)}
+										{/* {book.title} */}
+										<button
+											onClick={() => handleRemove("have-read", book._id)}
+											className="Remove"
+										>
+											Remove
+										</button>
+									</li>
+								))}
+							</ul>
+						)}
+					</section>
+				</div>
+			</div>
 		</div>
 	);
 };
