@@ -282,6 +282,13 @@ body {
 	padding: 15px;
 }
 
+.quote-cont h2 {
+	font-weight: 700;
+	font-size: 18px;
+	margin-left: 10px;
+	color: black;
+}
+
 /* Tablet (≤1024px) */
 @media (max-width: 1024px) {
 	.sub-wrapper {
@@ -315,5 +322,37 @@ body {
 	.dropdown ul {
 		grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
 		row-gap: 30px;
+	}
+}
+
+/*Loading bar animation */
+.loading-bar {
+	position: relative;
+	height: 4px;
+	width: 100%;
+	border-radius: 4px;
+	overflow: hidden;
+	background: rgba(0, 0, 0, 0.1); /* base line */
+	margin: 20px 0;
+}
+
+.loading-bar::after {
+	content: "";
+	position: absolute;
+	top: 0;
+	left: -50%;
+	height: 100%;
+	width: 50%;
+	background: linear-gradient(to right, #f43f5e, #a21caf, white);
+	animation: slide-loading 1s linear infinite;
+	border-radius: 4px;
+}
+
+@keyframes slide-loading {
+	from {
+		left: -50%;
+	}
+	to {
+		left: 100%;
 	}
 }
