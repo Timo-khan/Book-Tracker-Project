@@ -23,7 +23,7 @@ const LoginSignup: React.FC<LoginSignupProps> = ({ defaultMode = "signup" }) => 
 	});
 
 	const title = mode === "signup" ? "Sign Up" : "Login";
-	const apiUrl = "http://localhost:5002/api";
+	const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api";
 
 	async function handleSubmit(e: FormEvent) {
 		e.preventDefault();
