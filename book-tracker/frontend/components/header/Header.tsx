@@ -13,30 +13,34 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api";
 
 interface HeaderProps {
 	onLoginClick?: () => void;
-	user?: { username: string; image?: string };
+	onSignupClick?: () => void;
+	user?: { username: string; image?: string }; //allow passing user info
+	onLogout?: () => void; //logout handler
 }
 
-const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
-	const [isHidden, setIsHidden] = useState(false);
-	const [lastScrollY, setLastScrollY] = useState(0);
-	const [query, setQuery] = useState("");
-	const [suggestions, setSuggestions] = useState<Book[]>([]);
+const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
+	const [isHidden, setIsHidden] = useState(false); // hide header on scroll down
+	const [lastScrollY, setLastScrollY] = useState(0); // track scroll position
+	const [query, setQuery] = useState(""); // search input text
+	const [suggestions, setSuggestions] = useState<Book[]>([]); // search suggestions
 	const [loading, setLoading] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
+	const router = useRouter(); // Next.js router instance to programmatically navigate, router.push("/login"))
 	const [openProfile, setOpenProfile] = useState(false);
+	const pathname = usePathname(); // Gives you the current URL path (e.g., "/login", "/dashboard")
 	const [menuOpen, setMenuOpen] = useState(false);
-	const router = useRouter();
-	const pathname = usePathname();
 
-	// Hide header on scroll
+	// Hide header on scroll down, show on scroll up
 	useEffect(() => {
 		const handleScroll = () => {
 			const currentScrollY = window.scrollY;
+
 			if (currentScrollY > lastScrollY && currentScrollY > 60) {
-				setIsHidden(true);
+				setIsHidden(true); // scrolling down
 			} else {
-				setIsHidden(false);
+				setIsHidden(false); // scrolling up
 			}
+
 			setLastScrollY(currentScrollY);
 		};
 
@@ -61,8 +65,10 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 			.finally(() => setLoading(false));
 	}, [query]);
 
-	// Detect click outside search
+	// Used to detect clicks outside and close the search suggestions dropdown
 	const searchRef = useRef<HTMLDivElement | null>(null);
+
+	// Close dropdown on outside click
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
 			if (
@@ -72,11 +78,12 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 				setShowDropdown(false);
 			}
 		}
+
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
-	// Detect click outside profile dropdown
+	// --- Close profile dropdown on outside click
 	const profileRef = useRef<HTMLDivElement | null>(null);
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
@@ -91,7 +98,6 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
-	// ✅ Logout handler
 	const handleLogoutClick = async () => {
 		setOpenProfile(false);
 		try {
@@ -113,16 +119,17 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 		}
 	};
 
-	// Navigate to login
+
+	// Navigate to /login when button clicked
 	const handleLogin = () => {
 		if (onLoginClick) {
-			onLoginClick();
+			onLoginClick(); // optional custom callback
 		} else {
 			router.push("/login");
 		}
 	};
 
-	// Hide header on login/signup pages
+	//Hide header on login page
 	if (pathname === "/login" || pathname === "/signup") {
 		return null;
 	}
@@ -130,7 +137,6 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 	return (
 		<header className={`headerBar ${isHidden ? "hidden" : ""}`}>
 			<div className="headerContainer">
-				{/* Brand */}
 				<div className="Brand-container">
 					<div className="brand-name">
 						<Link href={user ? "/dashboard" : "/"} className="brand">
@@ -142,7 +148,6 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 					</div>
 				</div>
 
-				{/* Navigation + Search */}
 				<div className="search-pageRdr">
 					<nav className={`rdr-links ${menuOpen ? "open" : ""}`}>
 						<Link href="/" className="text">
@@ -156,7 +161,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 						</Link>
 					</nav>
 
-					{/* Hamburger (mobile) */}
+					{/* Hamburger Button (mobile only) */}
 					<button
 						className="menu-toggle"
 						onClick={() => setMenuOpen((prev) => !prev)}
@@ -175,6 +180,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 								onChange={(e) => setQuery(e.target.value)}
 								onFocus={() => query && setShowDropdown(true)}
 							/>
+
 							{loading && <div className="spinner"></div>}
 						</div>
 
@@ -205,26 +211,28 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 										</div>
 									</Link>
 								))}
-								<Link
-									href={`/search?q=${encodeURIComponent(query)}`}
-									className="see-more"
-									onClick={() => setShowDropdown(false)}
-								>
-									See more results →
-								</Link>
+
+								{suggestions.length > 0 && (
+									<Link
+										href={`/search?q=${encodeURIComponent(query)}`}
+										className="see-more"
+										onClick={() => setShowDropdown(false)}
+									>
+										See more results →
+									</Link>
+								)}
 							</div>
 						)}
 					</div>
 				</div>
 
-				{/* User Section */}
 				<div className="loginSection" aria-label="User">
 					{!user ? (
 						<>
 							<button onClick={handleLogin} className="loginCta">
 								Let&apos;s log in
 							</button>
-							{pathname === "/" && (
+							{pathname === "/" && ( // only show video on home
 								<div className="navVideoWrap" aria-hidden="true">
 									<video
 										className="navVideo"
@@ -256,7 +264,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
 											className="profile-img"
 										/>
 									) : (
-										<span className="profile-placeholder">👤</span>
+										<span className="profile-placeholder">👤</span> // fallback icon/text
 									)}
 								</div>
 							</button>

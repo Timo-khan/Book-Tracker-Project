@@ -5,7 +5,7 @@ const https = (u?: string) =>
 	u ? u.replace(/^http:\/\//, "https://") : undefined;
 
 //  Base API URL: use Render backend in production, fallback to localhost in dev
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api";
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5003/api";
 
 // Collections & Recommended endpoints
 const COLLECTIONS_API = `${API_BASE}/collections`;

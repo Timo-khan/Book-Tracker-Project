@@ -40,7 +40,7 @@ const Dashboard = () => {
 		"favorites" | "to-read" | "have-read" | "currentReads" | null
 	>(null);
 
-	const apiUrl = "http://localhost:5002/api";
+	const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api";
 
 	useEffect(() => {
 		async function fetchData() {
