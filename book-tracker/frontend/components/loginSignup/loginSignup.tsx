@@ -7,10 +7,12 @@ import "./loginSignup.css";
 export type AuthMode = "signup" | "login";
 
 interface LoginSignupProps {
-  defaultMode?: AuthMode; //prop to control initial mode
+	defaultMode?: AuthMode; //prop to control initial mode
 }
 
-const LoginSignup: React.FC<LoginSignupProps> = ({ defaultMode = "signup" }) => {
+const LoginSignup: React.FC<LoginSignupProps> = ({
+	defaultMode = "signup",
+}) => {
 	const [mode, setMode] = useState<AuthMode>(defaultMode);
 	const [loading, setLoading] = useState(false);
 	const [form, setForm] = useState({
@@ -25,13 +27,31 @@ const LoginSignup: React.FC<LoginSignupProps> = ({ defaultMode = "signup" }) => 
 	const title = mode === "signup" ? "Sign Up" : "Login";
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api";
 
+	// ✅ Helper to make API calls with cookies + JSON headers
+	async function apiRequest(path: string, options: RequestInit = {}) {
+		const res = await fetch(`${apiUrl}${path}`, {
+			...options,
+			credentials: "include", // important for cookies
+			headers: {
+				"Content-Type": "application/json",
+				...(options.headers || {}),
+			},
+		});
+
+		const data = await res.json();
+		if (!res.ok) {
+			throw new Error(data.message || "Request failed");
+		}
+		return data;
+	}
+
 	async function handleSubmit(e: FormEvent) {
 		e.preventDefault();
 		if (loading) return;
 		setLoading(true);
 		try {
 			if (mode === "signup") {
-				// ✅ Added inline password length validation
+				// password length validation
 				if (form.password.length < 8) {
 					alert("Password must be at least 8 characters long.");
 					setLoading(false);
@@ -45,10 +65,8 @@ const LoginSignup: React.FC<LoginSignupProps> = ({ defaultMode = "signup" }) => 
 					return;
 				}
 
-				const res = await fetch(`${apiUrl}/register`, {
+				await apiRequest("/register", {
 					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					credentials: "include",
 					body: JSON.stringify({
 						firstName: form.firstName,
 						lastName: form.lastName,
@@ -59,26 +77,17 @@ const LoginSignup: React.FC<LoginSignupProps> = ({ defaultMode = "signup" }) => 
 					}),
 				});
 
-				const data = await res.json();
-				if (!res.ok) throw new Error(data.message);
-
 				alert("You have successfully created your account!");
 				window.location.href = "/dashboard";
 			} else {
-				const res = await fetch(`${apiUrl}/login`, {
+				await apiRequest("/login", {
 					method: "POST",
-					headers: { "Content-Type": "application/json" },
-					credentials: "include",
 					body: JSON.stringify({
 						email: form.email,
 						password: form.password,
 					}),
 				});
 
-				const data = await res.json();
-				if (!res.ok) throw new Error(data.message);
-
-				// alert("Logged in successfully!");
 				window.location.href = "/dashboard";
 			}
 		} catch (err: unknown) {
