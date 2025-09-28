@@ -112,7 +112,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 			}
 
 			// redirect to login
-			router.push("/login");
+			router.push("/");
 		} catch (err) {
 			console.error("Logout error:", err);
 			alert("Failed to log out. Please try again.");
