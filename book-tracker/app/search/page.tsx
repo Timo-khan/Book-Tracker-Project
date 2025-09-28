@@ -1,4 +1,5 @@
 "use client";
+export const dynamic = "force-dynamic"; // for npm build-Next.js not to try prerendering /search at all (because it always depends on dynamic search input), add:
 
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
