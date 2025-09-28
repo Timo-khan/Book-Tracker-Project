@@ -1,10 +1,17 @@
-import { Book, GoogleBooksResponse  } from "../commonTypes/types";
+import { Book, GoogleBooksResponse } from "../commonTypes/types";
 
-
-// Force http -> https (keeps undefined as undefined)
+// Force http https (keeps undefined as undefined)
 const https = (u?: string) =>
 	u ? u.replace(/^http:\/\//, "https://") : undefined;
 
+//  Base API URL: use Render backend in production, fallback to localhost in dev
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api";
+
+// Collections & Recommended endpoints
+const COLLECTIONS_API = `${API_BASE}/collections`;
+const RECOMMENDED_API = `${API_BASE}/recommended`;
+
+// Google Books API
 export async function searchBooks(
 	query: string,
 	startIndex = 0
@@ -34,8 +41,7 @@ export async function searchBooks(
 	}));
 }
 
-//Fetch single book by ID
-
+// Fetch single book by ID
 export async function getBookById(id: string): Promise<Book> {
 	const res = await fetch(`https://www.googleapis.com/books/v1/volumes/${id}`);
 
@@ -63,9 +69,7 @@ export async function getBookById(id: string): Promise<Book> {
 	};
 }
 
-// Save book to collection (favorites, to-read, have-read)
-const COLLECTIONS_API = "http://localhost:5002/api/collections";
-
+// Collections
 export async function saveBookToCollection(
 	book: Book,
 	collection: "favorites" | "to-read" | "have-read" | "current-reads"
@@ -73,7 +77,7 @@ export async function saveBookToCollection(
 	const res = await fetch(`${COLLECTIONS_API}/${collection}`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
-		credentials: "include", //send JWT cookie
+		credentials: "include",
 		body: JSON.stringify({
 			google_id: book.id,
 			title: book.title,
@@ -97,8 +101,7 @@ export async function saveBookToCollection(
 	return res.json();
 }
 
-// Save a book to Recommended (community-wide)
-const RECOMMENDED_API = "http://localhost:5002/api/recommended";
+// Recommended
 export async function recommendBook(book: Book) {
 	const res = await fetch(RECOMMENDED_API, {
 		method: "POST",
@@ -121,7 +124,7 @@ export async function recommendBook(book: Book) {
 	}
 	return data;
 }
-// to display them on frontend
+
 export async function getRecommendedBooks() {
 	const res = await fetch(RECOMMENDED_API, {
 		method: "GET",
@@ -132,35 +135,30 @@ export async function getRecommendedBooks() {
 	if (!res.ok) {
 		throw new Error(data.error || "Failed to fetch recommended books");
 	}
-	return data; // returns array of recommended books
+	return data;
 }
 
-// transfer Current Read → Have Read
+// Current Reads
 export async function transferCurrentRead(id: string) {
-	const res = await fetch(
-		`http://localhost:5002/api/collections/current-reads/${id}/transfer`,
-		{ method: "POST", credentials: "include" }
-	);
+	const res = await fetch(`${COLLECTIONS_API}/current-reads/${id}/transfer`, {
+		method: "POST",
+		credentials: "include",
+	});
 	const data = await res.json();
 	if (!res.ok) throw new Error(data.error || "Failed to transfer");
-	return data; // { message, book }
+	return data;
 }
 
 export async function getCurrentReads() {
-	const res = await fetch(
-		"http://localhost:5002/api/collections/current-reads",
-		{
-			credentials: "include",
-		}
-	);
+	const res = await fetch(`${COLLECTIONS_API}/current-reads`, {
+		credentials: "include",
+	});
 	const data = await res.json();
 	if (!res.ok) throw new Error(data.error || "Failed to load current reads");
 	return data;
 }
 
-const API_BASE = "http://localhost:5002/api";
-
-// Fetch the currently authenticated user's info (from /me endpoint)
+// User and Collections
 export async function getUser() {
 	const res = await fetch(`${API_BASE}/me`, { credentials: "include" });
 	const data = await res.json();
@@ -168,9 +166,8 @@ export async function getUser() {
 	return data.user;
 }
 
-// Fetch all books saved in the "Favorites" collection for the logged-in user
 export async function getFavorites() {
-	const res = await fetch(`${API_BASE}/collections/favorites`, {
+	const res = await fetch(`${COLLECTIONS_API}/favorites`, {
 		credentials: "include",
 	});
 	const data = await res.json();
@@ -178,9 +175,8 @@ export async function getFavorites() {
 	return data;
 }
 
-// Fetch all books saved in the "To Read" collection for the logged-in user
 export async function getToRead() {
-	const res = await fetch(`${API_BASE}/collections/to-read`, {
+	const res = await fetch(`${COLLECTIONS_API}/to-read`, {
 		credentials: "include",
 	});
 	const data = await res.json();
@@ -188,9 +184,8 @@ export async function getToRead() {
 	return data;
 }
 
-// Fetch all books saved in the "Have Read" collection for the logged-in user
 export async function getHaveRead() {
-	const res = await fetch(`${API_BASE}/collections/have-read`, {
+	const res = await fetch(`${COLLECTIONS_API}/have-read`, {
 		credentials: "include",
 	});
 	const data = await res.json();
@@ -198,9 +193,8 @@ export async function getHaveRead() {
 	return data;
 }
 
-// Fetch all books currently being read (the "Current Reads" collection) for the logged-in user
 export async function getCurrentRead() {
-	const res = await fetch(`${API_BASE}/collections/current-reads`, {
+	const res = await fetch(`${COLLECTIONS_API}/current-reads`, {
 		credentials: "include",
 	});
 	const data = await res.json();
