@@ -25,7 +25,7 @@ const LoginSignup: React.FC<LoginSignupProps> = ({
 	});
 
 	const title = mode === "signup" ? "Sign Up" : "Login";
-	const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api";
+	const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5003/api";
 
 	// ✅ Helper to make API calls with cookies + JSON headers
 	async function apiRequest(path: string, options: RequestInit = {}) {
