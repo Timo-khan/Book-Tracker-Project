@@ -8,36 +8,35 @@ import { Book } from "@/frontend/commonTypes/types";
 import { searchBooks } from "@/frontend/services/bookServices";
 import "./Header.css";
 
+// centralize API base URL
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5002/api";
+
 interface HeaderProps {
 	onLoginClick?: () => void;
-	onSignupClick?: () => void;
-	user?: { username: string; image?: string }; //allow passing user info
-	onLogout?: () => void; //logout handler
+	user?: { username: string; image?: string };
 }
 
-const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
-	const [isHidden, setIsHidden] = useState(false); // hide header on scroll down
-	const [lastScrollY, setLastScrollY] = useState(0); // track scroll position
-	const [query, setQuery] = useState(""); // search input text
-	const [suggestions, setSuggestions] = useState<Book[]>([]); // search suggestions
+const Header: React.FC<HeaderProps> = ({ onLoginClick, user }) => {
+	const [isHidden, setIsHidden] = useState(false);
+	const [lastScrollY, setLastScrollY] = useState(0);
+	const [query, setQuery] = useState("");
+	const [suggestions, setSuggestions] = useState<Book[]>([]);
 	const [loading, setLoading] = useState(false);
 	const [showDropdown, setShowDropdown] = useState(false);
-	const router = useRouter(); // Next.js router instance to programmatically navigate, router.push("/login"))
 	const [openProfile, setOpenProfile] = useState(false);
-	const pathname = usePathname(); // Gives you the current URL path (e.g., "/login", "/dashboard")
 	const [menuOpen, setMenuOpen] = useState(false);
+	const router = useRouter();
+	const pathname = usePathname();
 
-	// Hide header on scroll down, show on scroll up
+	// Hide header on scroll
 	useEffect(() => {
 		const handleScroll = () => {
 			const currentScrollY = window.scrollY;
-
 			if (currentScrollY > lastScrollY && currentScrollY > 60) {
-				setIsHidden(true); // scrolling down
+				setIsHidden(true);
 			} else {
-				setIsHidden(false); // scrolling up
+				setIsHidden(false);
 			}
-
 			setLastScrollY(currentScrollY);
 		};
 
@@ -62,10 +61,8 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 			.finally(() => setLoading(false));
 	}, [query]);
 
-	// Used to detect clicks outside and close the search suggestions dropdown
+	// Detect click outside search
 	const searchRef = useRef<HTMLDivElement | null>(null);
-
-	// Close dropdown on outside click
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
 			if (
@@ -75,12 +72,11 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 				setShowDropdown(false);
 			}
 		}
-
 		document.addEventListener("mousedown", handleClickOutside);
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
-	// --- Close profile dropdown on outside click
+	// Detect click outside profile dropdown
 	const profileRef = useRef<HTMLDivElement | null>(null);
 	useEffect(() => {
 		function handleClickOutside(event: MouseEvent) {
@@ -95,21 +91,38 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 		return () => document.removeEventListener("mousedown", handleClickOutside);
 	}, []);
 
-	const handleLogoutClick = () => {
-		setOpenProfile(false); // close dropdown
-		if (onLogout) onLogout();
+	// ✅ Logout handler
+	const handleLogoutClick = async () => {
+		setOpenProfile(false);
+		try {
+			const res = await fetch(`${apiUrl}/logout`, {
+				method: "POST",
+				credentials: "include", // important to send cookies
+			});
+
+			if (!res.ok) {
+				const data = await res.json().catch(() => ({}));
+				throw new Error(data.message || "Logout failed");
+			}
+
+			// redirect to login
+			router.push("/login");
+		} catch (err) {
+			console.error("Logout error:", err);
+			alert("Failed to log out. Please try again.");
+		}
 	};
 
-	// Navigate to /login when button clicked
+	// Navigate to login
 	const handleLogin = () => {
 		if (onLoginClick) {
-			onLoginClick(); // optional custom callback
+			onLoginClick();
 		} else {
 			router.push("/login");
 		}
 	};
 
-	//Hide header on login page
+	// Hide header on login/signup pages
 	if (pathname === "/login" || pathname === "/signup") {
 		return null;
 	}
@@ -117,6 +130,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 	return (
 		<header className={`headerBar ${isHidden ? "hidden" : ""}`}>
 			<div className="headerContainer">
+				{/* Brand */}
 				<div className="Brand-container">
 					<div className="brand-name">
 						<Link href={user ? "/dashboard" : "/"} className="brand">
@@ -128,6 +142,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 					</div>
 				</div>
 
+				{/* Navigation + Search */}
 				<div className="search-pageRdr">
 					<nav className={`rdr-links ${menuOpen ? "open" : ""}`}>
 						<Link href="/" className="text">
@@ -141,7 +156,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 						</Link>
 					</nav>
 
-					{/* Hamburger Button (mobile only) */}
+					{/* Hamburger (mobile) */}
 					<button
 						className="menu-toggle"
 						onClick={() => setMenuOpen((prev) => !prev)}
@@ -160,7 +175,6 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 								onChange={(e) => setQuery(e.target.value)}
 								onFocus={() => query && setShowDropdown(true)}
 							/>
-
 							{loading && <div className="spinner"></div>}
 						</div>
 
@@ -191,28 +205,26 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 										</div>
 									</Link>
 								))}
-
-								{suggestions.length > 0 && (
-									<Link
-										href={`/search?q=${encodeURIComponent(query)}`}
-										className="see-more"
-										onClick={() => setShowDropdown(false)}
-									>
-										See more results →
-									</Link>
-								)}
+								<Link
+									href={`/search?q=${encodeURIComponent(query)}`}
+									className="see-more"
+									onClick={() => setShowDropdown(false)}
+								>
+									See more results →
+								</Link>
 							</div>
 						)}
 					</div>
 				</div>
 
+				{/* User Section */}
 				<div className="loginSection" aria-label="User">
 					{!user ? (
 						<>
 							<button onClick={handleLogin} className="loginCta">
 								Let&apos;s log in
 							</button>
-							{pathname === "/" && ( // only show video on home
+							{pathname === "/" && (
 								<div className="navVideoWrap" aria-hidden="true">
 									<video
 										className="navVideo"
@@ -244,7 +256,7 @@ const Header: React.FC<HeaderProps> = ({ onLoginClick, user, onLogout }) => {
 											className="profile-img"
 										/>
 									) : (
-										<span className="profile-placeholder">👤</span> // fallback icon/text
+										<span className="profile-placeholder">👤</span>
 									)}
 								</div>
 							</button>
